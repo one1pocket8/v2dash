@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V2Ray Config Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #252a3a;
+    --accent: #00e5ff;
+    --accent-dim: rgba(0,229,255,0.08);
+    --accent-glow: rgba(0,229,255,0.18);
+    --vless: #7c6eff;
+    --vmess: #00e5ff;
+    --ss: #ff6b6b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --success: #22c55e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: linear-gradient(180deg, #10131a 0%, var(--bg) 100%);
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .logo span { font-size: 12px; color: var(--muted); display: block; font-weight: 400; }
+
+  .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--muted);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 12px;
+  }
+
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--success);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .refresh-btn {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-family: 'Inter', sans-serif;
+    color: var(--accent); background: var(--accent-dim);
+    border: 1px solid rgba(0,229,255,0.25); border-radius: 20px;
+    padding: 5px 14px; cursor: pointer; transition: all 0.2s;
+  }
+  .refresh-btn:hover { background: var(--accent-glow); }
+  .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .next-refresh { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  .stats-bar { display: flex; gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+  .stat { flex: 1; padding: 14px 20px; background: var(--surface); text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .tabs { display: flex; padding: 20px 24px 0; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 10px 20px; font-size: 13px; font-weight: 500;
+    color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all 0.2s; user-select: none; border-radius: 8px 8px 0 0;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active[data-proto="vless"] { color: var(--vless); border-color: var(--vless); background: rgba(124,110,255,0.06); }
+  .tab.active[data-proto="vmess"] { color: var(--vmess); border-color: var(--vmess); background: rgba(0,229,255,0.06); }
+  .tab.active[data-proto="ss"]    { color: var(--ss);    border-color: var(--ss);    background: rgba(255,107,107,0.06); }
+
+  .tab-badge { display: inline-block; margin-left: 6px; font-size: 10px; padding: 1px 6px; border-radius: 10px; background: var(--surface2); color: var(--muted); }
+
+  .panel { display: none; padding: 20px 24px; }
+  .panel.active { display: block; }
+
+  .config-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .config-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px; transition: border-color 0.2s;
+  }
+  .config-card:hover { border-color: #374151; }
+
+  .card-num { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--muted); min-width: 22px; text-align: right; }
+
+  .card-body { flex: 1; min-width: 0; }
+  .card-host { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-meta { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+
+  .tag { font-size: 10px; padding: 2px 7px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-weight: 600; letter-spacing: 0.3px; }
+  .tag-port  { background: rgba(100,116,139,0.2); color: #94a3b8; }
+  .tag-tls   { background: rgba(34,197,94,0.15);  color: #86efac; }
+  .tag-notls { background: rgba(251,146,60,0.15);  color: #fdba74; }
+  .tag-type  { background: rgba(167,139,250,0.15); color: #c4b5fd; }
+
+  .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .btn-copy, .btn-qr {
+    border: none; border-radius: 7px; cursor: pointer;
+    font-size: 12px; padding: 6px 12px; font-family: 'Inter', sans-serif;
+    font-weight: 500; transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+  }
+  .btn-copy { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-copy:hover { background: #252a3a; }
+  .btn-copy.copied { background: rgba(34,197,94,0.15); color: var(--success); border-color: rgba(34,197,94,0.3); }
+  .btn-qr { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+  .btn-qr:hover { background: var(--accent-glow); }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); z-index: 1000;
+    align-items: center; justify-content: center; backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; max-width: 320px; width: 90%; text-align: center;
+  }
+  .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .modal p { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+
+  #qr-container { display: inline-block; background: white; padding: 14px; border-radius: 10px; margin-bottom: 20px; }
+
+  .modal-close {
+    width: 100%; padding: 10px; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .modal-close:hover { background: #252a3a; }
+
+  .loading-state, .error-state, .empty-state { padding: 60px 20px; text-align: center; }
+  .spinner {
+    width: 36px; height: 36px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-state p, .empty-state p { color: var(--muted); font-size: 14px; }
+  .error-state p { color: #f87171; font-size: 14px; }
+  .error-state small { color: var(--muted); font-size: 12px; display: block; margin-top: 6px; }
+
+  footer { text-align: center; padding: 24px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 8px; }
+  footer span { color: var(--text); }
+
+  @media (max-width: 600px) {
+    header { padding: 16px; }
+    .tabs { padding: 16px 16px 0; overflow-x: auto; }
+    .tab { padding: 9px 14px; white-space: nowrap; }
+    .panel { padding: 16px; }
+    .config-card { flex-wrap: wrap; }
+    .card-actions { width: 100%; }
+    .btn-copy, .btn-qr { flex: 1; justify-content: center; }
+    .stats-bar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🛡</div>
+    <div>
+      <h1>V2Ray Dashboard</h1>
+      <span>Myanmar · Auto-refresh every 12h</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-pill">
+      <div class="dot"></div>
+      <span id="last-updated">Loading…</span>
+    </div>
+    <div class="next-refresh" id="countdown"></div>
+    <button class="refresh-btn" id="refresh-btn" onclick="fetchAll()">↻ Refresh now</button>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num" id="stat-vless">—</div><div class="stat-label">VLESS</div></div>
+  <div class="stat"><div class="stat-num" id="stat-vmess">—</div><div class="stat-label">VMess</div></div>
+  <div class="stat"><div class="stat-num" id="stat-ss">—</div><div class="stat-label">Shadowsocks</div></div>
+  <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total loaded</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-proto="vless" onclick="switchTab('vless', this)">VLESS <span class="tab-badge" id="badge-vless">…</span></div>
+  <div class="tab" data-proto="vmess" onclick="switchTab('vmess', this)">VMess <span class="tab-badge" id="badge-vmess">…</span></div>
+  <div class="tab" data-proto="ss" onclick="switchTab('ss', this)">Shadowsocks <span class="tab-badge" id="badge-ss">…</span></div>
+</div>
+
+<div id="panel-vless" class="panel active"><div class="loading-state"><div class="spinner"></div><p>Fetching VLESS configs…</p></div></div>
+<div id="panel-vmess" class="panel"><div class="loading-state"><div class="spinner"></div><p>Fetching VMess configs…</p></div></div>
+<div id="panel-ss" class="panel"><div class="loading-state"><div class="spinner"></div><p>Fetching Shadowsocks configs…</p></div></div>
+
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <h3>Scan with V2BOX</h3>
+    <p>Point your camera at the QR code to import this config</p>
+    <div id="qr-container"></div>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<footer>
+  Source: <span>V2RayRoot/V2RayConfig</span> · Updated every 30 min on GitHub · Top 10 per protocol shown
+</footer>
+
+<script>
+const PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  url => url,
+];
+
+const SOURCES = {
+  vless: 'https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/main/Config/vless.txt',
+  vmess: 'https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/main/Config/vmess.txt',
+  ss:    'https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/main/Config/shadowsocks.txt',
+};
+
+const TOP_N = 10;
+let nextRefreshAt = null;
+
+async function fetchWithFallback(url) {
+  for (const proxyFn of PROXIES) {
+    try {
+      const res = await fetch(proxyFn(url), { cache: 'no-store' });
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.length > 20) return text;
+      }
+    } catch (_) {}
+  }
+  throw new Error('All proxies failed — check network');
+}
+
+function parseConfigs(raw, proto) {
+  const prefix = proto === 'ss' ? 'ss://' : (proto + '://');
+  return raw.split('\n').map(l => l.trim()).filter(l => l.startsWith(prefix)).slice(0, TOP_N);
+}
+
+function parseUriMeta(uri) {
+  try {
+    if (uri.startsWith('vmess://')) {
+      const b64 = uri.slice(8).split('#')[0];
+      const json = JSON.parse(atob(b64));
+      return { host: json.add||'?', port: json.port||'?', tls: json.tls==='tls', type: json.net||'tcp', name: json.ps || json.add || 'VMess' };
+    }
+    const noScheme = uri.replace(/^\w+:\/\//, '');
+    const atSplit = noScheme.split('@');
+    const hostPart = atSplit.length > 1 ? atSplit[atSplit.length - 1] : atSplit[0];
+    const [hostPort, queryFrag] = hostPart.split('?');
+    const colonIdx = hostPort.lastIndexOf(':');
+    const host = hostPort.slice(0, colonIdx) || hostPort;
+    const port = hostPort.slice(colonIdx + 1).split('/')[0] || '?';
+    const params = new URLSearchParams((queryFrag||'').split('#')[0]);
+    const tls = (params.get('security')||'').includes('tls');
+    const type = params.get('type') || params.get('net') || 'tcp';
+    const rawName = uri.split('#')[1] || '';
+    let name = '';
+    try { name = decodeURIComponent(rawName); } catch { name = rawName; }
+    // Strip non-latin names, fall back to host
+    if (!name || !/[\x20-\x7E]/.test(name)) name = host;
+    name = name.replace(/[^\x20-\x7E]/g, '').trim() || host;
+    return { host, port, tls, type, name };
+  } catch {
+    return { host: '?', port: '?', tls: false, type: '?', name: uri.slice(0, 30) };
+  }
+}
+
+function renderPanel(proto, configs) {
+  const panel = document.getElementById(`panel-${proto}`);
+  if (!configs || configs.length === 0) {
+    panel.innerHTML = `<div class="empty-state"><p>No configs found for this protocol.</p></div>`;
+    return;
+  }
+  document.getElementById(`badge-${proto}`).textContent = configs.length;
+  document.getElementById(`stat-${proto}`).textContent = configs.length;
+
+  // Store configs globally for onclick use
+  window._configs = window._configs || {};
+  window._configs[proto] = configs;
+
+  const html = `<div class="config-list">` + configs.map((uri, i) => {
+    const m = parseUriMeta(uri);
+    const safeName = (m.name||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `
+      <div class="config-card">
+        <div class="card-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="card-body">
+          <div class="card-host" title="${safeName}">${safeName || m.host}</div>
+          <div class="card-meta">
+            <span class="tag tag-port">:${m.port}</span>
+            <span class="tag ${m.tls?'tag-tls':'tag-notls'}">${m.tls?'TLS':'NO-TLS'}</span>
+            <span class="tag tag-type">${(m.type||'tcp').toUpperCase()}</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-copy" onclick="copyConfig(this,'${proto}',${i})">⎘ Copy</button>
+          <button class="btn-qr"   onclick="showQR('${proto}',${i})">▣ QR</button>
+        </div>
+      </div>`;
+  }).join('') + `</div>`;
+  panel.innerHTML = html;
+}
+
+function copyConfig(btn, proto, idx) {
+  const uri = window._configs[proto][idx];
+  const doIt = (text) => {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '⎘ Copy'; btn.classList.remove('copied'); }, 2000);
+  };
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(uri).then(doIt).catch(() => fallbackCopy(uri, doIt));
+  } else {
+    fallbackCopy(uri, doIt);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); cb(); } catch(_) {}
+  document.body.removeChild(ta);
+}
+
+function showQR(proto, idx) {
+  const uri = window._configs[proto][idx];
+  const container = document.getElementById('qr-container');
+  container.innerHTML = '';
+  new QRCode(container, { text: uri, width: 220, height: 220, colorDark:'#000', colorLight:'#fff', correctLevel: QRCode.CorrectLevel.M });
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal') || e.currentTarget === document.querySelector('.modal-close')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+
+function switchTab(proto, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(`panel-${proto}`).classList.add('active');
+}
+
+async function fetchAll() {
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true; btn.textContent = '… Loading';
+
+  ['vless','vmess','ss'].forEach(p => {
+    document.getElementById(`panel-${p}`).innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Fetching ${p} configs…</p></div>`;
+    document.getElementById(`badge-${p}`).textContent = '…';
+  });
+
+  window._configs = {};
+  let total = 0;
+
+  await Promise.allSettled(['vless','vmess','ss'].map(async proto => {
+    try {
+      const raw = await fetchWithFallback(SOURCES[proto]);
+      const configs = parseConfigs(raw, proto);
+      renderPanel(proto, configs);
+      total += configs.length;
+    } catch (err) {
+      document.getElementById(`panel-${proto}`).innerHTML = `
+        <div class="error-state">
+          <p>⚠ Failed to load ${proto.toUpperCase()} configs</p>
+          <small>${err.message}</small>
+          <small style="margin-top:8px">Check your network or try again.</small>
+        </div>`;
+      document.getElementById(`badge-${proto}`).textContent = '!';
+      document.getElementById(`stat-${proto}`).textContent = '✗';
+    }
+  }));
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  nextRefreshAt = Date.now() + 12 * 60 * 60 * 1000;
+  btn.disabled = false; btn.innerHTML = '↻ Refresh now';
+}
+
+function updateCountdown() {
+  if (!nextRefreshAt) return;
+  const diff = nextRefreshAt - Date.now();
+  if (diff <= 0) { fetchAll(); return; }
+  const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+  const p = n => String(n).padStart(2,'0');
+  document.getElementById('countdown').textContent = `Next refresh: ${p(h)}:${p(m)}:${p(s)}`;
+}
+
+fetchAll();
+setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
