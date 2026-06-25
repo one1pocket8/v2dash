@@ -1,0 +1,39 @@
+name: Fetch V2Ray Configs
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'   # every 4 hours
+  workflow_dispatch:          # manual trigger button in GitHub UI
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch VLESS configs
+        run: |
+          curl -sf --max-time 30 \
+            "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/main/Config/vless.txt" \
+            -o configs/vless.txt || echo "fetch failed" > configs/vless.txt
+
+      - name: Fetch VMess configs
+        run: |
+          curl -sf --max-time 30 \
+            "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/main/Config/vmess.txt" \
+            -o configs/vmess.txt || echo "fetch failed" > configs/vmess.txt
+
+      - name: Fetch Shadowsocks configs
+        run: |
+          curl -sf --max-time 30 \
+            "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/main/Config/shadowsocks.txt" \
+            -o configs/ss.txt || echo "fetch failed" > configs/ss.txt
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add configs/
+          git diff --cached --quiet || git commit -m "chore: update configs $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
