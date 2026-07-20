@@ -2,396 +2,359 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V2Ray Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>V2Ray</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
-  :root {
-    --bg: #0d0f14;
-    --surface: #141720;
-    --surface2: #1c2030;
-    --border: #252a3a;
-    --accent: #00e5ff;
-    --accent-dim: rgba(0,229,255,0.08);
-    --accent-glow: rgba(0,229,255,0.18);
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --success: #22c55e;
-  }
+:root {
+  --bg: #0e0e0e;
+  --surface: #1a1a1a;
+  --surface2: #242424;
+  --border: #2e2e2e;
+  --orange: #ff4d1c;
+  --orange-dark: #cc3a12;
+  --blue: #2f54eb;
+  --off-white: #f0f0f0;
+  --muted: #666666;
+  --success: #22c55e;
+  --radius: 20px;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { background: #0e0e0e; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-  }
+body {
+  background: var(--bg);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
 
-  header {
-    padding: 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    background: linear-gradient(180deg, #10131a 0%, var(--bg) 100%);
-  }
+.header {
+  padding: 56px 24px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.header h1 { font-size: 40px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
+.header p  { font-size: 13px; color: var(--muted); margin-top: 5px; }
 
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: var(--accent);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
-  .logo h1 { font-size: 18px; font-weight: 600; }
-  .logo span { font-size: 12px; color: var(--muted); display: block; }
+.refresh-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--surface2); border: none;
+  color: var(--muted); font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0; margin-top: 2px;
+}
+.refresh-btn:hover { color: #fff; }
+.refresh-btn.spinning { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.status-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 24px 22px;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.status-text { font-size: 13px; color: var(--muted); }
+.status-text b { color: var(--off-white); font-weight: 500; }
 
-  .status-pill {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 12px; color: var(--muted);
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; padding: 5px 12px;
-  }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+/* stat cards */
+.stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 24px 10px; }
+.stat-card { border-radius: var(--radius); padding: 22px 20px; position: relative; overflow: hidden; }
+.stat-card.orange { background: var(--orange); }
+.stat-card.blue   { background: var(--blue); }
+.stat-card .num   { font-size: 44px; font-weight: 700; letter-spacing: -2.5px; line-height: 1; }
+.stat-card .lbl   { font-size: 11px; font-weight: 600; opacity: .7; margin-top: 5px; text-transform: uppercase; letter-spacing: .8px; }
+.stat-card .ico   { position: absolute; bottom: 14px; right: 18px; font-size: 24px; opacity: .3; }
 
-  .refresh-btn {
-    font-size: 12px; font-family: 'Inter', sans-serif;
-    color: var(--accent); background: var(--accent-dim);
-    border: 1px solid rgba(0,229,255,0.25); border-radius: 20px;
-    padding: 5px 14px; cursor: pointer; transition: all 0.2s;
-  }
-  .refresh-btn:hover { background: var(--accent-glow); }
-  .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* sub link */
+.sub-card {
+  background: var(--blue); border-radius: var(--radius);
+  padding: 20px 22px; margin: 10px 24px 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.sub-card h3 { font-size: 15px; font-weight: 700; }
+.sub-card p  { font-size: 12px; opacity: .65; margin-top: 2px; }
+.sub-btn {
+  background: rgba(255,255,255,.18); border: none; border-radius: 12px;
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px; font-weight: 700; padding: 9px 16px;
+  cursor: pointer; white-space: nowrap; transition: background .15s; flex-shrink: 0;
+}
+.sub-btn:hover { background: rgba(255,255,255,.28); }
+.sub-btn.copied { background: rgba(34,197,94,.35); }
 
-  .source-badge {
-    font-size: 11px; font-family: 'JetBrains Mono', monospace;
-    color: var(--muted); background: var(--surface2);
-    border: 1px solid var(--border); border-radius: 20px;
-    padding: 4px 10px;
-  }
+/* section */
+.section-header { display: flex; align-items: baseline; justify-content: space-between; padding: 26px 24px 14px; }
+.section-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -.5px; }
+.section-header span { font-size: 12px; color: var(--muted); }
 
-  .stats-bar {
-    display: flex; gap: 1px; background: var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .stat { flex: 1; padding: 14px 20px; background: var(--surface); text-align: center; }
-  .stat-num { font-size: 22px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: var(--accent); }
-  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+/* pills */
+.pills { display: flex; gap: 8px; padding: 0 24px 20px; overflow-x: auto; scrollbar-width: none; }
+.pills::-webkit-scrollbar { display: none; }
+.pill {
+  padding: 9px 20px; border-radius: 100px; font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap; border: none; transition: all .2s;
+}
+.pill.off  { background: var(--surface2); color: var(--muted); }
+.pill.on-vless { background: var(--orange); color: #fff; }
+.pill.on-vmess { background: var(--blue);   color: #fff; }
+.pill.on-ss    { background: #3a3a3a;        color: #fff; }
 
-  .tabs { display: flex; padding: 20px 24px 0; border-bottom: 1px solid var(--border); }
-  .tab {
-    padding: 10px 20px; font-size: 13px; font-weight: 500;
-    color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
-    transition: all 0.2s; user-select: none; border-radius: 8px 8px 0 0;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active[data-proto="vless"] { color: #7c6eff; border-color: #7c6eff; background: rgba(124,110,255,0.06); }
-  .tab.active[data-proto="vmess"] { color: var(--accent); border-color: var(--accent); background: rgba(0,229,255,0.06); }
-  .tab.active[data-proto="ss"]    { color: #ff6b6b; border-color: #ff6b6b; background: rgba(255,107,107,0.06); }
-  .tab-badge { display: inline-block; margin-left: 6px; font-size: 10px; padding: 1px 6px; border-radius: 10px; background: var(--surface2); color: var(--muted); }
+/* panels */
+.panels { padding: 0 24px; }
+.panel { display: none; flex-direction: column; gap: 10px; }
+.panel.active { display: flex; }
 
-  .panel { display: none; padding: 20px 24px; }
-  .panel.active { display: block; }
+/* cards */
+.config-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 16px 18px; display: flex; align-items: center; gap: 14px;
+  transition: background .15s;
+}
+.config-card:active { background: var(--surface2); }
+.rank { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 20px; }
+.info { flex: 1; min-width: 0; }
+.cname { font-size: 14px; font-weight: 600; color: var(--off-white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; letter-spacing: .4px; text-transform: uppercase; }
+.t-port  { background: rgba(255,255,255,.06); color: #777; }
+.t-tls   { background: rgba(34,197,94,.15);  color: #4ade80; }
+.t-notls { background: rgba(255,77,28,.12);  color: #ff6b47; }
+.t-type  { background: rgba(47,84,235,.2);   color: #818cf8; }
+.btns { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+.btn-c, .btn-q {
+  border: none; border-radius: 10px; font-size: 12px; font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif; cursor: pointer; padding: 7px 13px;
+  transition: all .15s; white-space: nowrap;
+}
+.btn-c { background: var(--surface2); color: var(--off-white); }
+.btn-c:active { transform: scale(.95); }
+.btn-c.ok { background: rgba(34,197,94,.2); color: #4ade80; }
+.btn-q { background: var(--orange); color: #fff; }
+.btn-q:active { transform: scale(.95); background: var(--orange-dark); }
 
-  .config-list { display: flex; flex-direction: column; gap: 10px; }
+/* states */
+.loading-s, .error-s { padding: 48px 0; text-align: center; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 14px; }
+.loading-s p { color: var(--muted); font-size: 14px; }
+.error-s p { color: #f87171; font-size: 14px; font-weight: 600; }
+.error-s small { color: var(--muted); font-size: 12px; display: block; margin-top: 6px; line-height: 1.5; }
 
-  .config-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 16px;
-    display: flex; align-items: center; gap: 12px; transition: border-color 0.2s;
-  }
-  .config-card:hover { border-color: #374151; }
+/* modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; align-items: flex-end; justify-content: center; backdrop-filter: blur(6px); }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: 28px 28px 0 0; padding: 24px 28px 48px; width: 100%; max-width: 430px; text-align: center; animation: up .3s cubic-bezier(.34,1.56,.64,1); }
+@keyframes up { from { transform: translateY(100%); } }
+.handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 22px; }
+.modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.modal p  { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+#qr-box { display: inline-block; background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 22px; }
+.modal-close { width: 100%; padding: 14px; background: var(--surface2); border: none; border-radius: 14px; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
 
-  .card-num { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--muted); min-width: 22px; text-align: right; }
-  .card-body { flex: 1; min-width: 0; }
-  .card-host { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-meta { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
-
-  .tag { font-size: 10px; padding: 2px 7px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
-  .tag-port  { background: rgba(100,116,139,0.2); color: #94a3b8; }
-  .tag-tls   { background: rgba(34,197,94,0.15);  color: #86efac; }
-  .tag-notls { background: rgba(251,146,60,0.15);  color: #fdba74; }
-  .tag-type  { background: rgba(167,139,250,0.15); color: #c4b5fd; }
-
-  .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
-
-  .btn-copy, .btn-qr {
-    border: none; border-radius: 7px; cursor: pointer;
-    font-size: 12px; padding: 6px 12px; font-family: 'Inter', sans-serif;
-    font-weight: 500; transition: all 0.15s; display: flex; align-items: center; gap: 4px;
-  }
-  .btn-copy { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-copy:hover { background: #252a3a; }
-  .btn-copy.copied { background: rgba(34,197,94,0.15); color: var(--success); border-color: rgba(34,197,94,0.3); }
-  .btn-qr { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
-  .btn-qr:hover { background: var(--accent-glow); }
-
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.75); z-index: 1000;
-    align-items: center; justify-content: center; backdrop-filter: blur(4px);
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; padding: 28px; max-width: 320px; width: 90%; text-align: center;
-  }
-  .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-  .modal p { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
-  #qr-container { display: inline-block; background: white; padding: 14px; border-radius: 10px; margin-bottom: 20px; }
-  .modal-close {
-    width: 100%; padding: 10px; background: var(--surface2);
-    border: 1px solid var(--border); border-radius: 8px;
-    color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer;
-  }
-  .modal-close:hover { background: #252a3a; }
-
-  .loading-state, .error-state, .empty-state { padding: 60px 20px; text-align: center; }
-  .spinner {
-    width: 36px; height: 36px; border: 3px solid var(--border);
-    border-top-color: var(--accent); border-radius: 50%;
-    animation: spin 0.8s linear infinite; margin: 0 auto 16px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-state p { color: var(--muted); font-size: 14px; }
-  .error-state p { color: #f87171; font-size: 14px; }
-  .error-state small { color: var(--muted); font-size: 12px; display: block; margin-top: 6px; }
-
-  .last-fetch-info {
-    text-align: center; padding: 10px;
-    font-size: 11px; color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .last-fetch-info span { color: var(--accent); }
-
-  footer {
-    text-align: center; padding: 20px;
-    font-size: 12px; color: var(--muted);
-    border-top: 1px solid var(--border); margin-top: 8px;
-  }
-
-  @media (max-width: 600px) {
-    header { padding: 16px; }
-    .tabs { padding: 16px 16px 0; overflow-x: auto; }
-    .tab { padding: 9px 14px; white-space: nowrap; }
-    .panel { padding: 16px; }
-    .config-card { flex-wrap: wrap; }
-    .card-actions { width: 100%; }
-    .btn-copy, .btn-qr { flex: 1; justify-content: center; }
-    .stats-bar { display: none; }
-  }
+.footer { text-align: center; padding: 32px 24px 0; font-size: 12px; color: #444; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">🛡</div>
-    <div>
-      <h1>V2Ray Dashboard</h1>
-      <span>Myanmar · Auto-fetched every 4h via GitHub Actions</span>
-    </div>
+<div class="header">
+  <div>
+    <h1>V2Ray</h1>
+    <p>Myanmar · Best servers</p>
   </div>
-  <div class="header-right">
-    <div class="source-badge">⚡ Local cache · No proxy</div>
-    <div class="status-pill">
-      <div class="dot"></div>
-      <span id="last-updated">Loading…</span>
-    </div>
-    <button class="refresh-btn" id="refresh-btn" onclick="loadAll()">↻ Reload</button>
+  <button class="refresh-btn" id="rbtn" onclick="loadAll()">↻</button>
+</div>
+
+<div class="status-row">
+  <div class="dot"></div>
+  <div class="status-text" id="stxt">Loading configs…</div>
+</div>
+
+<div class="stat-row">
+  <div class="stat-card orange">
+    <div class="num" id="stat-n">—</div>
+    <div class="lbl">Servers</div>
+    <div class="ico">⚡</div>
   </div>
-</header>
-
-<div class="last-fetch-info" id="fetch-info">
-  Configs are fetched from GitHub automatically every 4 hours — <span>no waiting, no proxies</span>
+  <div class="stat-card blue">
+    <div class="num">3</div>
+    <div class="lbl">Protocols</div>
+    <div class="ico">🔗</div>
+  </div>
 </div>
 
-<div class="stats-bar">
-  <div class="stat"><div class="stat-num" id="stat-vless">—</div><div class="stat-label">VLESS</div></div>
-  <div class="stat"><div class="stat-num" id="stat-vmess">—</div><div class="stat-label">VMess</div></div>
-  <div class="stat"><div class="stat-num" id="stat-ss">—</div><div class="stat-label">Shadowsocks</div></div>
-  <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total</div></div>
+<div class="sub-card">
+  <div>
+    <h3>Subscription Link</h3>
+    <p>Import all at once into V2BOX</p>
+  </div>
+  <button class="sub-btn" id="subbtn" onclick="copySubLink()">Copy link</button>
 </div>
 
-<div class="tabs">
-  <div class="tab active" data-proto="vless" onclick="switchTab('vless',this)">VLESS <span class="tab-badge" id="badge-vless">…</span></div>
-  <div class="tab" data-proto="vmess" onclick="switchTab('vmess',this)">VMess <span class="tab-badge" id="badge-vmess">…</span></div>
-  <div class="tab" data-proto="ss" onclick="switchTab('ss',this)">Shadowsocks <span class="tab-badge" id="badge-ss">…</span></div>
+<div class="section-header">
+  <h2>Servers</h2>
+  <span>Top 10 each</span>
 </div>
 
-<div id="panel-vless" class="panel active"><div class="loading-state"><div class="spinner"></div><p>Loading VLESS configs…</p></div></div>
-<div id="panel-vmess" class="panel"><div class="loading-state"><div class="spinner"></div><p>Loading VMess configs…</p></div></div>
-<div id="panel-ss" class="panel"><div class="loading-state"><div class="spinner"></div><p>Loading Shadowsocks configs…</p></div></div>
+<div class="pills">
+  <button class="pill on-vless" data-p="vless" onclick="switchTab('vless',this)">VLESS</button>
+  <button class="pill off"      data-p="vmess" onclick="switchTab('vmess',this)">VMess</button>
+  <button class="pill off"      data-p="ss"    onclick="switchTab('ss',this)">Shadowsocks</button>
+</div>
 
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+<div class="panels">
+  <div class="panel active" id="panel-vless"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel"        id="panel-vmess"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel"        id="panel-ss">   <div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+</div>
+
+<div class="footer">Auto-fetched every 4h · V2RayRoot/V2RayConfig</div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
+    <div class="handle"></div>
     <h3>Scan with V2BOX</h3>
-    <p>Point your camera at the QR code to import this config</p>
-    <div id="qr-container"></div>
-    <button class="modal-close" onclick="closeModal()">Close</button>
+    <p>Point your camera to import this server</p>
+    <div id="qr-box"></div>
+    <button class="modal-close" onclick="closeModal()">Done</button>
   </div>
 </div>
-
-<footer>
-  Source: <strong style="color:var(--text)">V2RayRoot/V2RayConfig</strong> · Cached locally in your repo · Top 10 per protocol
-</footer>
 
 <script>
-// These are served from YOUR repo — same origin, instant load, no CORS
-const SOURCES = {
-  vless: './configs/vless.txt',
-  vmess: './configs/vmess.txt',
-  ss:    './configs/ss.txt',
-};
+const SRC = { vless:'./configs/vless.txt', vmess:'./configs/vmess.txt', ss:'./configs/ss.txt' };
+window._c = {};
 
-const TOP_N = 10;
-window._configs = {};
-
-function parseConfigs(raw, proto) {
-  const prefix = proto === 'ss' ? 'ss://' : (proto + '://');
-  return raw.split('\n').map(l => l.trim()).filter(l => l.startsWith(prefix)).slice(0, TOP_N);
+function parse(raw, proto) {
+  const pfx = proto==='ss' ? 'ss://' : proto+'://';
+  return raw.split('\n').map(l=>l.trim()).filter(l=>l.startsWith(pfx)).slice(0,10);
 }
 
-function parseUriMeta(uri) {
+function meta(uri) {
   try {
     if (uri.startsWith('vmess://')) {
-      const json = JSON.parse(atob(uri.slice(8).split('#')[0]));
-      return { host: json.add||'?', port: json.port||'?', tls: json.tls==='tls', type: json.net||'tcp', name: json.ps||json.add||'VMess' };
+      const j = JSON.parse(atob(uri.slice(8).split('#')[0]));
+      return { name: j.ps||j.add||'VMess', port: j.port||'?', tls: j.tls==='tls', type: j.net||'tcp' };
     }
-    const noScheme = uri.replace(/^\w+:\/\//, '');
-    const atSplit = noScheme.split('@');
-    const hostPart = atSplit.length > 1 ? atSplit[atSplit.length-1] : atSplit[0];
-    const colonIdx = hostPart.lastIndexOf(':');
-    const host = hostPart.slice(0, colonIdx) || hostPart;
-    const port = hostPart.slice(colonIdx+1).split(/[/?#]/)[0] || '?';
-    const qIdx = hostPart.indexOf('?');
-    const params = new URLSearchParams(qIdx >= 0 ? hostPart.slice(qIdx+1).split('#')[0] : '');
-    const tls = (params.get('security')||'').includes('tls');
-    const type = params.get('type') || params.get('net') || 'tcp';
-    const rawName = uri.split('#')[1] || '';
-    let name = '';
-    try { name = decodeURIComponent(rawName); } catch { name = rawName; }
-    name = name.replace(/[^\x20-\x7E]/g,'').trim() || host;
-    return { host, port, tls, type, name };
-  } catch {
-    return { host:'?', port:'?', tls:false, type:'?', name: uri.slice(0,30) };
-  }
+    const ns = uri.replace(/^\w+:\/\//,'');
+    const parts = ns.split('@');
+    const hp = parts.length>1 ? parts[parts.length-1] : parts[0];
+    const ci = hp.lastIndexOf(':');
+    const host = hp.slice(0,ci)||hp;
+    const port = hp.slice(ci+1).split(/[/?#]/)[0]||'?';
+    const qi = hp.indexOf('?');
+    const p = new URLSearchParams(qi>=0 ? hp.slice(qi+1).split('#')[0] : '');
+    const tls = (p.get('security')||'').includes('tls');
+    const type = p.get('type')||p.get('net')||'tcp';
+    const rn = uri.split('#')[1]||'';
+    let name=''; try { name=decodeURIComponent(rn); } catch { name=rn; }
+    name = name.replace(/[^\x20-\x7E]/g,'').trim()||host;
+    return { name, port, tls, type };
+  } catch { return { name: uri.slice(0,28), port:'?', tls:false, type:'?' }; }
 }
 
 function renderPanel(proto, configs) {
-  const panel = document.getElementById(`panel-${proto}`);
-  if (!configs || configs.length === 0) {
-    panel.innerHTML = `<div class="error-state"><p>⚠ No configs yet</p><small>The GitHub Action hasn't run yet. Go to your repo → Actions → "Fetch V2Ray Configs" → Run workflow</small></div>`;
+  const el = document.getElementById('panel-'+proto);
+  if (!configs||!configs.length) {
+    el.innerHTML = `<div class="error-s"><p>No configs yet</p><small>Go to Actions → "Fetch V2Ray Configs" → Run workflow</small></div>`;
     return;
   }
-  window._configs[proto] = configs;
-  document.getElementById(`badge-${proto}`).textContent = configs.length;
-  document.getElementById(`stat-${proto}`).textContent = configs.length;
-
-  panel.innerHTML = `<div class="config-list">` + configs.map((uri, i) => {
-    const m = parseUriMeta(uri);
-    const safe = s => (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    return `
-      <div class="config-card">
-        <div class="card-num">${String(i+1).padStart(2,'0')}</div>
-        <div class="card-body">
-          <div class="card-host" title="${safe(m.name)}">${safe(m.name||m.host)}</div>
-          <div class="card-meta">
-            <span class="tag tag-port">:${m.port}</span>
-            <span class="tag ${m.tls?'tag-tls':'tag-notls'}">${m.tls?'TLS':'NO-TLS'}</span>
-            <span class="tag tag-type">${(m.type||'tcp').toUpperCase()}</span>
-          </div>
+  window._c[proto] = configs;
+  el.innerHTML = configs.map((uri,i) => {
+    const m = meta(uri);
+    const s = t=>(t||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `<div class="config-card">
+      <div class="rank">${String(i+1).padStart(2,'0')}</div>
+      <div class="info">
+        <div class="cname" title="${s(m.name)}">${s(m.name)}</div>
+        <div class="tags">
+          <span class="tag t-port">:${m.port}</span>
+          <span class="tag ${m.tls?'t-tls':'t-notls'}">${m.tls?'TLS':'NO TLS'}</span>
+          <span class="tag t-type">${(m.type||'tcp').toUpperCase()}</span>
         </div>
-        <div class="card-actions">
-          <button class="btn-copy" onclick="copyConfig(this,'${proto}',${i})">⎘ Copy</button>
-          <button class="btn-qr"   onclick="showQR('${proto}',${i})">▣ QR</button>
-        </div>
-      </div>`;
-  }).join('') + `</div>`;
+      </div>
+      <div class="btns">
+        <button class="btn-c" onclick="cp(this,'${proto}',${i})">Copy</button>
+        <button class="btn-q" onclick="qr('${proto}',${i})">QR</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-function copyConfig(btn, proto, idx) {
-  const uri = window._configs[proto][idx];
-  const done = () => { btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.innerHTML='⎘ Copy'; btn.classList.remove('copied'); },2000); };
-  if (navigator.clipboard) navigator.clipboard.writeText(uri).then(done).catch(()=>fallback(uri,done));
-  else fallback(uri,done);
+function cp(btn, proto, idx) {
+  const uri = window._c[proto][idx];
+  const done = () => { btn.textContent='✓'; btn.classList.add('ok'); setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('ok'); },2000); };
+  if (navigator.clipboard) navigator.clipboard.writeText(uri).then(done).catch(()=>fb(uri,done));
+  else fb(uri,done);
 }
 
-function fallback(text, cb) {
+function fb(t, cb) {
   const ta = document.createElement('textarea');
-  ta.value=text; ta.style.cssText='position:fixed;opacity:0';
+  ta.value=t; ta.style.cssText='position:fixed;opacity:0';
   document.body.appendChild(ta); ta.focus(); ta.select();
   try { document.execCommand('copy'); cb(); } catch(_){}
   document.body.removeChild(ta);
 }
 
-function showQR(proto, idx) {
-  const uri = window._configs[proto][idx];
-  const container = document.getElementById('qr-container');
-  container.innerHTML = '';
-  new QRCode(container, { text:uri, width:220, height:220, colorDark:'#000', colorLight:'#fff', correctLevel:QRCode.CorrectLevel.M });
+function copySubLink() {
+  const all = [...(window._c.vless||[]),...(window._c.vmess||[]),...(window._c.ss||[])];
+  if (!all.length) { alert('Wait for configs to finish loading.'); return; }
+  const url = 'data:text/plain;base64,' + btoa(unescape(encodeURIComponent(all.join('\n'))));
+  const btn = document.getElementById('subbtn');
+  const done = () => { btn.textContent='✓ Copied!'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='Copy link'; btn.classList.remove('copied'); },2500); };
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(()=>fb(url,done));
+  else fb(url,done);
+}
+
+function qr(proto, idx) {
+  const uri = window._c[proto][idx];
+  const box = document.getElementById('qr-box');
+  box.innerHTML = '';
+  new QRCode(box, { text:uri, width:220, height:220, colorDark:'#000', colorLight:'#fff', correctLevel:QRCode.CorrectLevel.M });
   document.getElementById('modal').classList.add('open');
 }
-
-function closeModal(e) {
-  if (!e || e.target===document.getElementById('modal')) document.getElementById('modal').classList.remove('open');
-}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
 function switchTab(proto, el) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pill').forEach(p => { p.className='pill off'; });
+  el.className = `pill on-${proto}`;
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(`panel-${proto}`).classList.add('active');
+  document.getElementById('panel-'+proto).classList.add('active');
 }
 
 async function loadAll() {
-  const btn = document.getElementById('refresh-btn');
-  btn.disabled=true; btn.textContent='… Loading';
-  window._configs = {};
-
+  const btn = document.getElementById('rbtn');
+  btn.classList.add('spinning');
+  document.getElementById('stxt').innerHTML = 'Refreshing…';
+  window._c = {};
   ['vless','vmess','ss'].forEach(p => {
-    document.getElementById(`panel-${p}`).innerHTML=`<div class="loading-state"><div class="spinner"></div><p>Loading ${p} configs…</p></div>`;
-    document.getElementById(`badge-${p}`).textContent='…';
-    document.getElementById(`stat-${p}`).textContent='—';
+    document.getElementById('panel-'+p).innerHTML = `<div class="loading-s"><div class="spinner"></div><p>Loading…</p></div>`;
   });
 
   let total = 0;
   await Promise.all(['vless','vmess','ss'].map(async proto => {
     try {
-      // Add cache-busting to always get the latest committed file
-      const res = await fetch(`${SOURCES[proto]}?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`${SRC[proto]}?t=${Date.now()}`, { cache:'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const raw = await res.text();
-      if (raw.trim() === 'fetch failed') throw new Error('Config file is empty — Action not run yet');
-      const configs = parseConfigs(raw, proto);
+      if (!raw.trim()||raw.trim()==='fetch failed') throw new Error('Run the GitHub Action first');
+      const configs = parse(raw, proto);
       renderPanel(proto, configs);
       total += configs.length;
-    } catch(err) {
-      document.getElementById(`panel-${proto}`).innerHTML=`
-        <div class="error-state">
-          <p>⚠ Could not load ${proto.toUpperCase()}</p>
-          <small>${err.message}</small>
-          <small style="margin-top:8px">Go to your repo → Actions → Run workflow manually first.</small>
-        </div>`;
-      document.getElementById(`badge-${proto}`).textContent='!';
-      document.getElementById(`stat-${proto}`).textContent='✗';
+    } catch(e) {
+      document.getElementById('panel-'+proto).innerHTML = `<div class="error-s"><p>${proto.toUpperCase()} failed</p><small>${e.message}</small></div>`;
     }
   }));
 
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('last-updated').textContent = 'Loaded ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  btn.disabled=false; btn.innerHTML='↻ Reload';
+  document.getElementById('stat-n').textContent = total||'—';
+  const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('stxt').innerHTML = `Updated <b>${t}</b> · 4h auto-refresh`;
+  btn.classList.remove('spinning');
 }
 
 loadAll();
