@@ -6,29 +6,29 @@
 <title>V2Ray</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
-  --bg: #0e0e0e;
-  --surface: #1a1a1a;
-  --surface2: #242424;
-  --border: #2e2e2e;
-  --orange: #ff4d1c;
-  --orange-dark: #cc3a12;
-  --blue: #2f54eb;
-  --off-white: #f0f0f0;
-  --muted: #666666;
-  --success: #22c55e;
+  --bg: #f5f0eb;
+  --surface: #ede8e2;
+  --surface2: #e2dcd5;
+  --border: #d5cec6;
+  --orange: #c8541a;
+  --orange-dark: #a8430f;
+  --blue: #3a5fd9;
+  --off-white: #2a2118;
+  --muted: #9a8f84;
+  --success: #3a7c52;
   --radius: 20px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html { background: #0e0e0e; }
+html { background: #f5f0eb; }
 
 body {
   background: var(--bg);
-  color: #fff;
-  font-family: 'Space Grotesk', sans-serif;
+  color: var(--off-white);
+  font-family: 'Instrument Serif', serif;
   min-height: 100vh;
   max-width: 430px;
   margin: 0 auto;
@@ -43,14 +43,14 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  background: rgba(14,14,14,0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(245,240,235,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   z-index: 50;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
 }
-.header h1 { font-size: 40px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
-.header p  { font-size: 13px; color: var(--muted); margin-top: 5px; }
+.header h1 { font-family: 'Young Serif', serif; font-size: 38px; font-weight: 400; letter-spacing: -1px; line-height: 1; color: var(--off-white); }
+.header p  { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 14px; color: var(--muted); margin-top: 4px; }
 
 .refresh-btn {
   width: 42px; height: 42px; border-radius: 50%;
@@ -59,7 +59,7 @@ body {
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all 0.2s; flex-shrink: 0; margin-top: 2px;
 }
-.refresh-btn:hover { color: #fff; }
+.refresh-btn:hover { color: var(--off-white); }
 .refresh-btn.spinning { animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -110,10 +110,10 @@ body {
   padding: 9px 20px; border-radius: 100px; font-size: 13px; font-weight: 600;
   cursor: pointer; white-space: nowrap; border: none; transition: all .2s;
 }
-.pill.off  { background: var(--surface2); color: var(--muted); }
-.pill.on-vless { background: var(--orange); color: #fff; }
-.pill.on-vmess { background: var(--blue);   color: #fff; }
-.pill.on-ss    { background: #3a3a3a;        color: #fff; }
+.pill.off       { background: var(--surface2); color: var(--muted); }
+.pill.on-latency { background: var(--orange); color: #fff; }
+.pill.on-stable  { background: var(--surface2); color: var(--muted); cursor: default; }
+.pill.on-top20   { background: var(--blue);   color: #fff; }
 
 /* panels */
 .panels { padding: 0 24px; }
@@ -166,7 +166,36 @@ body {
 #qr-box { display: inline-block; background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 22px; }
 .modal-close { width: 100%; padding: 14px; background: var(--surface2); border: none; border-radius: 14px; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
 
-.footer { text-align: center; padding: 32px 24px 0; font-size: 12px; color: #444; }
+.footer { text-align: center; padding: 32px 24px 0; font-size: 12px; color: #9a8f84; }
+
+.coming-soon {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 40px 28px;
+  text-align: center;
+  border: 1.5px dashed var(--border);
+}
+.cs-icon { font-size: 36px; margin-bottom: 14px; }
+.coming-soon h3 {
+  font-family: 'Young Serif', serif;
+  font-size: 22px; font-weight: 400;
+  color: var(--off-white); margin-bottom: 10px;
+}
+.coming-soon p {
+  font-size: 14px; color: var(--muted);
+  line-height: 1.6; margin-bottom: 18px;
+  font-style: italic;
+}
+.coming-soon span {
+  display: inline-block;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface2);
+  border-radius: 20px; padding: 5px 14px;
+  font-family: 'Instrument Serif', serif;
+  font-style: normal;
+}
 
 /* ── Parallax scroll content ── */
 .scroll-content {
@@ -224,15 +253,22 @@ body {
 </div>
 
 <div class="pills">
-  <button class="pill on-vless" data-p="vless" onclick="switchTab('vless',this)">VLESS</button>
-  <button class="pill off"      data-p="vmess" onclick="switchTab('vmess',this)">VMess</button>
-  <button class="pill off"      data-p="ss"    onclick="switchTab('ss',this)">Shadowsocks</button>
+  <button class="pill on-latency" data-p="latency" onclick="switchTab('latency',this)">⚡ Lowest Latency</button>
+  <button class="pill off"        data-p="stable"  onclick="switchTab('stable',this)">🛡 Best Stable</button>
+  <button class="pill off"        data-p="top20"   onclick="switchTab('top20',this)">★ Top 20</button>
 </div>
 
 <div class="panels">
-  <div class="panel active" id="panel-vless"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
-  <div class="panel"        id="panel-vmess"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
-  <div class="panel"        id="panel-ss">   <div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel active" id="panel-latency"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel"        id="panel-stable">
+    <div class="coming-soon">
+      <div class="cs-icon">🛡</div>
+      <h3>Best Stable</h3>
+      <p>Real-time connection testing across all servers. Each server is pinged repeatedly to find the most consistent ones — not just fast, but reliable.</p>
+      <span>Coming soon</span>
+    </div>
+  </div>
+  <div class="panel" id="panel-top20"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
 </div>
 
 <div class="footer">Auto-fetched every 4h · V2RayRoot/V2RayConfig</div>
@@ -249,12 +285,14 @@ body {
 </div>
 
 <script>
-const SRC = { vless:'./configs/vless.txt', vmess:'./configs/vmess.txt', ss:'./configs/ss.txt' };
+const SRC = { latency:'./configs/latency.txt', top20:'./configs/top20.txt' };
 window._c = {};
 
-function parse(raw, proto) {
-  const pfx = proto==='ss' ? 'ss://' : proto+'://';
-  return raw.split('\n').map(l=>l.trim()).filter(l=>l.startsWith(pfx)).slice(0,10);
+function parse(raw) {
+  return raw.split('\n').map(l=>l.trim()).filter(l=>
+    l.startsWith('vless://') || l.startsWith('vmess://') ||
+    l.startsWith('ss://') || l.startsWith('trojan://')
+  );
 }
 
 function meta(uri) {
@@ -324,7 +362,7 @@ function fb(t, cb) {
 }
 
 function copySubLink() {
-  const all = [...(window._c.vless||[]),...(window._c.vmess||[]),...(window._c.ss||[])];
+  const all = [...new Set([...(window._c.latency||[]),...(window._c.top20||[])])];
   if (!all.length) { alert('Wait for configs to finish loading.'); return; }
   const url = 'data:text/plain;base64,' + btoa(unescape(encodeURIComponent(all.join('\n'))));
   const btn = document.getElementById('subbtn');
@@ -343,6 +381,13 @@ function qr(proto, idx) {
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
 function switchTab(proto, el) {
+  if (proto === 'stable') {
+    document.querySelectorAll('.pill').forEach(p => { p.className='pill off'; });
+    el.className = 'pill on-stable';
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-stable').classList.add('active');
+    return;
+  }
   document.querySelectorAll('.pill').forEach(p => { p.className='pill off'; });
   el.className = `pill on-${proto}`;
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -354,22 +399,22 @@ async function loadAll() {
   btn.classList.add('spinning');
   document.getElementById('stxt').innerHTML = 'Refreshing…';
   window._c = {};
-  ['vless','vmess','ss'].forEach(p => {
+  ['latency','top20'].forEach(p => {
     document.getElementById('panel-'+p).innerHTML = `<div class="loading-s"><div class="spinner"></div><p>Loading…</p></div>`;
   });
 
   let total = 0;
-  await Promise.all(['vless','vmess','ss'].map(async proto => {
+  await Promise.all(['latency','top20'].map(async tab => {
     try {
-      const res = await fetch(`${SRC[proto]}?t=${Date.now()}`, { cache:'no-store' });
+      const res = await fetch(`${SRC[tab]}?t=${Date.now()}`, { cache:'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const raw = await res.text();
-      if (!raw.trim()||raw.trim()==='fetch failed') throw new Error('Run the GitHub Action first');
-      const configs = parse(raw, proto);
-      renderPanel(proto, configs);
+      if (!raw.trim() || raw.trim()==='fetch failed') throw new Error('Run the GitHub Action first');
+      const configs = parse(raw);
+      renderPanel(tab, configs);
       total += configs.length;
     } catch(e) {
-      document.getElementById('panel-'+proto).innerHTML = `<div class="error-s"><p>${proto.toUpperCase()} failed</p><small>${e.message}</small></div>`;
+      document.getElementById('panel-'+tab).innerHTML = `<div class="error-s"><p>Could not load</p><small>${e.message}</small></div>`;
     }
   }));
 
