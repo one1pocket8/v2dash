@@ -12,39 +12,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Fetch configs from ShatakVPN
+      - name: Fetch VLESS and VMess for Lowest Latency tab
         run: |
-          BASE="https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs/sg"
+          curl -sf --max-time 30 "https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs/sg/vless.txt" -o /tmp/vless.txt || true
+          curl -sf --max-time 30 "https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs/sg/vmess.txt" -o /tmp/vmess.txt || true
+          cat /tmp/vless.txt /tmp/vmess.txt 2>/dev/null | grep -v '^$' | awk '!seen[$0]++' > /tmp/combined.txt
+          python3 sort_latency.py
+          cp /tmp/latency_sorted.txt configs/latency.txt
 
-          # For "Lowest Latency" tab — vless + vmess, TLS/443 prioritized, top 20
-          curl -sf --max-time 30 "$BASE/vless.txt" -o /tmp/vless_raw.txt || true
-          curl -sf --max-time 30 "$BASE/vmess.txt" -o /tmp/vmess_raw.txt || true
-          cat /tmp/vless_raw.txt /tmp/vmess_raw.txt 2>/dev/null \
-            | grep -v '^$' \
-            | awk '!seen[$0]++' \
-            | python3 -c "
-import sys, re
-lines = [l.strip() for l in sys.stdin if l.strip()]
-def score(u):
-    port_match = re.search(r':(\d+)[?#]', u)
-    port = int(port_match.group(1)) if port_match else 9999
-    tls = 1 if 'security=tls' in u or 'tls' in u else 0
-    # Prefer TLS and common ports 443, 8443, 2083, 2087
-    prio = 0 if port in (443,8443,2083,2087,2096) else 1
-    return (prio, -tls, port)
-lines.sort(key=score)
-print('\n'.join(lines[:20]))
-" > configs/latency.txt || echo "fetch failed" > configs/latency.txt
+      - name: Fetch all protocols for Top 20 tab
+        run: |
+          curl -sf --max-time 30 "https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs/sg/all.txt" -o /tmp/all.txt || true
+          cat /tmp/all.txt | grep -v '^$' | awk '!seen[$0]++' | head -20 > configs/top20.txt
 
-          # For "Top 20" tab — all protocols mixed, deduped
-          curl -sf --max-time 30 "$BASE/all.txt" -o /tmp/all_raw.txt || true
-          cat /tmp/all_raw.txt 2>/dev/null \
-            | grep -v '^$' \
-            | awk '!seen[$0]++' \
-            | head -20 > configs/top20.txt || echo "fetch failed" > configs/top20.txt
-
-          # "Best Stable" is coming soon — write placeholder
-          echo "coming_soon" > configs/stable.txt
+      - name: Write stable placeholder
+        run: echo "coming_soon" > configs/stable.txt
 
       - name: Commit and push if changed
         run: |
