@@ -12,18 +12,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Fetch VLESS configs from SG and TH sources
+      - name: Fetch VLESS configs from providers
         run: |
-          BASE="https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs"
-
-          # ShatakVPN — Singapore and Thailand VLESS only
-          curl -sf --max-time 30 "$BASE/sg/vless.txt" -o /tmp/shatak_sg.txt || true
-          curl -sf --max-time 30 "$BASE/th/vless.txt" -o /tmp/shatak_th.txt || true
-
-          # Epodonios — full pool, we filter SG/TH by keyword in test_servers.py
+          # Epodonios — large pool
           curl -sf --max-time 30 "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt" -o /tmp/epodonios_all.txt || true
 
-          # MatinGhanbari — full pool, filter SG/TH by keyword in test_servers.py
+          # MatinGhanbari — large pool
           curl -sf --max-time 30 "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/all_sub.txt" -o /tmp/matin_all.txt || true
 
       - name: Test and filter live servers
