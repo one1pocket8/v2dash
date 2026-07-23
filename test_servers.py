@@ -82,16 +82,14 @@ def filter_live(uris, max_results, test_limit=200):
 
     return live[:max_results]
 
-# ── Load all sources — no country filter, take all VLESS ──
-shatak_sg  = [u for u in load_lines('/tmp/shatak_sg.txt')  if is_vless(u)]
-shatak_th  = [u for u in load_lines('/tmp/shatak_th.txt')  if is_vless(u)]
+# ── Load all sources ──
 epodonios  = [u for u in load_lines('/tmp/epodonios_all.txt') if is_vless(u)]
 matin      = [u for u in load_lines('/tmp/matin_all.txt')  if is_vless(u)]
 
-print(f"Raw counts — ShatakSG:{len(shatak_sg)} ShatakTH:{len(shatak_th)} Epodonios:{len(epodonios)} Matin:{len(matin)}")
+print(f"Raw counts — Epodonios:{len(epodonios)} Matin:{len(matin)}")
 
-# ── Latency tab — ShatakVPN SG+TH first (closest), then others ──
-latency_pool = dedupe(shatak_sg + shatak_th + epodonios + matin)
+# ── Latency tab ──
+latency_pool = dedupe(epodonios + matin)
 latency_pool.sort(key=score)
 print(f"Latency pool: {len(latency_pool)} unique candidates")
 live_latency = filter_live(latency_pool, TOP_N, test_limit=200)
@@ -102,7 +100,7 @@ print(f"Latency tab: {len(live_latency)} live servers saved")
 # ── Top 20 tab — exclude latency results, find next 20 live ──
 latency_set = set(live_latency)
 top20_pool = dedupe(
-    [u for u in (shatak_sg + shatak_th + epodonios + matin) if u not in latency_set]
+    [u for u in (epodonios + matin) if u not in latency_set]
 )
 top20_pool.sort(key=score)
 print(f"Top20 pool: {len(top20_pool)} unique candidates")
