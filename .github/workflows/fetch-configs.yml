@@ -12,18 +12,22 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Fetch VLESS and VMess for Lowest Latency tab
+      - name: Fetch VLESS configs from SG and TH sources
         run: |
-          curl -sf --max-time 30 "https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs/sg/vless.txt" -o /tmp/vless.txt || true
-          curl -sf --max-time 30 "https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs/sg/vmess.txt" -o /tmp/vmess.txt || true
-          cat /tmp/vless.txt /tmp/vmess.txt 2>/dev/null | grep -v '^$' | awk '!seen[$0]++' > /tmp/combined.txt
-          python3 sort_latency.py
-          cp /tmp/latency_sorted.txt configs/latency.txt
+          BASE="https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs"
 
-      - name: Fetch all protocols for Top 20 tab
-        run: |
-          curl -sf --max-time 30 "https://raw.githubusercontent.com/ShatakVPN/ConfigForge-V2Ray/main/configs/sg/all.txt" -o /tmp/all.txt || true
-          cat /tmp/all.txt | grep -v '^$' | awk '!seen[$0]++' | head -20 > configs/top20.txt
+          # ShatakVPN — Singapore and Thailand VLESS only
+          curl -sf --max-time 30 "$BASE/sg/vless.txt" -o /tmp/shatak_sg.txt || true
+          curl -sf --max-time 30 "$BASE/th/vless.txt" -o /tmp/shatak_th.txt || true
+
+          # Epodonios — full pool, we filter SG/TH by keyword in test_servers.py
+          curl -sf --max-time 30 "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt" -o /tmp/epodonios_all.txt || true
+
+          # MatinGhanbari — full pool, filter SG/TH by keyword in test_servers.py
+          curl -sf --max-time 30 "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/all_sub.txt" -o /tmp/matin_all.txt || true
+
+      - name: Test and filter live servers
+        run: python3 test_servers.py
 
       - name: Write stable placeholder
         run: echo "coming_soon" > configs/stable.txt
