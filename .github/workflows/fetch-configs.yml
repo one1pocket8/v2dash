@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Fetch VLESS configs from providers
+      - name: Fetch configs from providers
         run: |
           # Epodonios — large pool
           curl -sf --max-time 30 "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt" -o /tmp/epodonios_all.txt || true
@@ -20,11 +20,14 @@ jobs:
           # MatinGhanbari — large pool
           curl -sf --max-time 30 "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/all_sub.txt" -o /tmp/matin_all.txt || true
 
-      - name: Test and filter live servers
-        run: python3 test_servers.py
+          # F0rc3Run — mixed protocol, Telegram-sourced
+          curl -sf --max-time 30 "https://raw.githubusercontent.com/F0rc3Run/F0rc3Run/main/Special/Telegram.txt" -o /tmp/f0rc3run_all.txt || true
 
-      - name: Write stable placeholder
-        run: echo "coming_soon" > configs/stable.txt
+          # RoosterKid / openproxylist — mixed protocol, hourly validated
+          curl -sf --max-time 30 "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY.txt" -o /tmp/rooster_all.txt || true
+
+      - name: Test and filter live servers per provider
+        run: python3 test_servers.py
 
       - name: Commit and push if changed
         run: |
