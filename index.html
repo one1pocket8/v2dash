@@ -110,10 +110,8 @@ body {
   padding: 9px 20px; border-radius: 100px; font-size: 13px; font-weight: 600;
   cursor: pointer; white-space: nowrap; border: none; transition: all .2s;
 }
-.pill.off       { background: var(--surface2); color: var(--muted); }
-.pill.on-latency { background: var(--orange); color: #fff; }
-.pill.on-stable  { background: var(--surface2); color: var(--muted); cursor: default; }
-.pill.on-top20   { background: var(--blue);   color: #fff; }
+.pill.off  { background: var(--surface2); color: var(--muted); }
+.pill.on   { background: var(--orange); color: #fff; }
 
 /* panels */
 .panels { padding: 0 24px; }
@@ -233,8 +231,8 @@ body {
     <div class="ico">⚡</div>
   </div>
   <div class="stat-card blue">
-    <div class="num">3</div>
-    <div class="lbl">Protocols</div>
+    <div class="num">4</div>
+    <div class="lbl">Providers</div>
     <div class="ico">🔗</div>
   </div>
 </div>
@@ -253,25 +251,20 @@ body {
 </div>
 
 <div class="pills">
-  <button class="pill on-latency" data-p="latency" onclick="switchTab('latency',this)">⚡ Lowest Latency</button>
-  <button class="pill off"        data-p="stable"  onclick="switchTab('stable',this)">🛡 Best Stable</button>
-  <button class="pill off"        data-p="top20"   onclick="switchTab('top20',this)">★ Top 20</button>
+  <button class="pill on" data-p="epo"      onclick="switchTab('epo',this)">Epo</button>
+  <button class="pill off" data-p="matin"    onclick="switchTab('matin',this)">Matin</button>
+  <button class="pill off" data-p="f0rc3run" onclick="switchTab('f0rc3run',this)">F0rc3</button>
+  <button class="pill off" data-p="rooster"  onclick="switchTab('rooster',this)">Rooster</button>
 </div>
 
 <div class="panels">
-  <div class="panel active" id="panel-latency"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
-  <div class="panel"        id="panel-stable">
-    <div class="coming-soon">
-      <div class="cs-icon">🛡</div>
-      <h3>Best Stable</h3>
-      <p>Real-time connection testing across all servers. Each server is pinged repeatedly to find the most consistent ones — not just fast, but reliable.</p>
-      <span>Coming soon</span>
-    </div>
-  </div>
-  <div class="panel" id="panel-top20"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel active" id="panel-epo"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel"        id="panel-matin"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel"        id="panel-f0rc3run"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div class="panel"        id="panel-rooster"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
 </div>
 
-<div class="footer">Auto-fetched every 4h · V2RayRoot/V2RayConfig</div>
+<div class="footer">Auto-fetched every 4h · Epodonios · MatinGhanbari · F0rc3Run · RoosterKid</div>
 </div><!-- end scroll-content -->
 
 <div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
@@ -285,7 +278,13 @@ body {
 </div>
 
 <script>
-const SRC = { latency:'./configs/latency.txt', top20:'./configs/top20.txt' };
+const SRC = {
+  epo:      './configs/epo.txt',
+  matin:    './configs/matin.txt',
+  f0rc3run: './configs/f0rc3run.txt',
+  rooster:  './configs/rooster.txt'
+};
+const TABS = Object.keys(SRC);
 window._c = {};
 
 function parse(raw) {
@@ -362,7 +361,7 @@ function fb(t, cb) {
 }
 
 function copySubLink() {
-  const all = [...new Set([...(window._c.latency||[]),...(window._c.top20||[])])];
+  const all = [...new Set(TABS.flatMap(t => window._c[t]||[]))];
   if (!all.length) { alert('Wait for configs to finish loading.'); return; }
   const url = 'data:text/plain;base64,' + btoa(unescape(encodeURIComponent(all.join('\n'))));
   const btn = document.getElementById('subbtn');
@@ -381,15 +380,8 @@ function qr(proto, idx) {
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
 function switchTab(proto, el) {
-  if (proto === 'stable') {
-    document.querySelectorAll('.pill').forEach(p => { p.className='pill off'; });
-    el.className = 'pill on-stable';
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById('panel-stable').classList.add('active');
-    return;
-  }
   document.querySelectorAll('.pill').forEach(p => { p.className='pill off'; });
-  el.className = `pill on-${proto}`;
+  el.className = 'pill on';
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+proto).classList.add('active');
 }
@@ -399,12 +391,12 @@ async function loadAll() {
   btn.classList.add('spinning');
   document.getElementById('stxt').innerHTML = 'Refreshing…';
   window._c = {};
-  ['latency','top20'].forEach(p => {
+  TABS.forEach(p => {
     document.getElementById('panel-'+p).innerHTML = `<div class="loading-s"><div class="spinner"></div><p>Loading…</p></div>`;
   });
 
   let total = 0;
-  await Promise.all(['latency','top20'].map(async tab => {
+  await Promise.all(TABS.map(async tab => {
     try {
       const res = await fetch(`${SRC[tab]}?t=${Date.now()}`, { cache:'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
