@@ -3,433 +3,389 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>V2Ray</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<title>V2Dash</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
-  --bg: #f5f0eb;
-  --surface: #ede8e2;
-  --surface2: #e2dcd5;
-  --border: #d5cec6;
-  --orange: #c8541a;
-  --orange-dark: #a8430f;
-  --blue: #3a5fd9;
-  --off-white: #2a2118;
-  --muted: #9a8f84;
-  --success: #3a7c52;
-  --radius: 20px;
+  --page-top: #f7f6f4;
+  --page-bottom: #c3c3c1;
+  --panel-tint: rgba(0,0,0,0.26);
+  --card-bg: #0c0c0c;
+  --pill-bg: #474747;
+  --pill-ok: #3a7c52;
+  --muted: #8f8d89;
+  --dot-off: #bcbab6;
+  --dot-on: #17140f;
+  --ink: #171310;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+  --serif: 'Instrument Serif', serif;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html { background: #f5f0eb; }
-
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+html, body { height: 100%; overscroll-behavior: none; }
 body {
-  background: var(--bg);
-  color: var(--off-white);
-  font-family: 'Instrument Serif', serif;
-  min-height: 100vh;
+  background: var(--page-bottom);
+  color: var(--ink);
+  font-family: var(--sans);
+}
+
+.app {
   max-width: 430px;
   margin: 0 auto;
-  padding-bottom: 48px;
-}
-
-.header {
-  position: fixed;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px;
-  padding: 52px 24px 16px;
+  height: 100dvh;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  background: rgba(245,240,235,0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  z-index: 50;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-direction: column;
+  background: linear-gradient(180deg, var(--page-top) 0%, var(--page-bottom) 380px, var(--page-bottom) 100%);
+  overflow: hidden;
 }
-.header h1 { font-family: 'Young Serif', serif; font-size: 38px; font-weight: 400; letter-spacing: -1px; line-height: 1; color: var(--off-white); }
-.header p  { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 14px; color: var(--muted); margin-top: 4px; }
 
-.refresh-btn {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--surface2); border: none;
-  color: var(--muted); font-size: 18px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s; flex-shrink: 0; margin-top: 2px;
+/* ── header ── */
+.header-section { flex: 0 0 auto; padding: 44px 22px 0; }
+.top-row { display: flex; justify-content: space-between; align-items: flex-start; }
+.logo { font-family: var(--serif); font-size: 46px; font-weight: 400; letter-spacing: -1px; line-height: 1; color: var(--ink); }
+.top-actions { display: flex; gap: 10px; margin-top: 2px; }
+
+.icon-btn {
+  width: 50px; height: 50px; border-radius: 15px;
+  background: #111; border: none; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform .15s;
 }
-.refresh-btn:hover { color: var(--off-white); }
-.refresh-btn.spinning { animation: spin 0.7s linear infinite; }
+.icon-btn:active { transform: scale(.92); }
+.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn.spinning svg { animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+.icon-btn.ok { background: var(--pill-ok); }
 
-.status-row {
-  display: flex; align-items: center; gap: 8px;
-  padding: 0 24px 22px;
-}
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-.status-text { font-size: 13px; color: var(--muted); }
-.status-text b { color: var(--off-white); font-weight: 500; }
-
-/* stat cards */
-.stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 24px 10px; }
-.stat-card { border-radius: var(--radius); padding: 22px 20px; position: relative; overflow: hidden; }
-.stat-card.orange { background: var(--orange); }
-.stat-card.blue   { background: var(--blue); }
-.stat-card .num   { font-size: 44px; font-weight: 700; letter-spacing: -2.5px; line-height: 1; }
-.stat-card .lbl   { font-size: 11px; font-weight: 600; opacity: .7; margin-top: 5px; text-transform: uppercase; letter-spacing: .8px; }
-.stat-card .ico   { position: absolute; bottom: 14px; right: 18px; font-size: 24px; opacity: .3; }
-
-/* sub link */
-.sub-card {
-  background: var(--blue); border-radius: var(--radius);
-  padding: 20px 22px; margin: 10px 24px 0;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
-.sub-card h3 { font-size: 15px; font-weight: 700; }
-.sub-card p  { font-size: 12px; opacity: .65; margin-top: 2px; }
-.sub-btn {
-  background: rgba(255,255,255,.18); border: none; border-radius: 12px;
-  color: #fff; font-family: 'Space Grotesk', sans-serif;
-  font-size: 12px; font-weight: 700; padding: 9px 16px;
-  cursor: pointer; white-space: nowrap; transition: background .15s; flex-shrink: 0;
-}
-.sub-btn:hover { background: rgba(255,255,255,.28); }
-.sub-btn.copied { background: rgba(34,197,94,.35); }
-
-/* section */
-.section-header { display: flex; align-items: baseline; justify-content: space-between; padding: 26px 24px 14px; }
-.section-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -.5px; }
-.section-header span { font-size: 12px; color: var(--muted); }
-
-/* pills */
-.pills { display: flex; gap: 8px; padding: 0 24px 20px; overflow-x: auto; scrollbar-width: none; }
-.pills::-webkit-scrollbar { display: none; }
-.pill {
-  padding: 9px 20px; border-radius: 100px; font-size: 13px; font-weight: 600;
-  cursor: pointer; white-space: nowrap; border: none; transition: all .2s;
-}
-.pill.off  { background: var(--surface2); color: var(--muted); }
-.pill.on   { background: var(--orange); color: #fff; }
-
-/* panels */
-.panels { padding: 0 24px; }
-.panel { display: none; flex-direction: column; gap: 10px; }
-.panel.active { display: flex; }
-
-/* cards */
-.config-card {
-  background: var(--surface); border-radius: var(--radius);
-  padding: 16px 18px; display: flex; align-items: center; gap: 14px;
-  transition: background .15s;
-}
-.config-card:active { background: var(--surface2); }
-.rank { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 20px; }
-.info { flex: 1; min-width: 0; }
-.cname { font-size: 14px; font-weight: 600; color: var(--off-white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-.tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; letter-spacing: .4px; text-transform: uppercase; }
-.t-port  { background: rgba(255,255,255,.06); color: #777; }
-.t-tls   { background: rgba(34,197,94,.15);  color: #4ade80; }
-.t-notls { background: rgba(255,77,28,.12);  color: #ff6b47; }
-.t-type  { background: rgba(47,84,235,.2);   color: #818cf8; }
-.btns { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-.btn-c, .btn-q {
-  border: none; border-radius: 10px; font-size: 12px; font-weight: 600;
-  font-family: 'Space Grotesk', sans-serif; cursor: pointer; padding: 7px 13px;
-  transition: all .15s; white-space: nowrap;
-}
-.btn-c { background: var(--surface2); color: var(--off-white); }
-.btn-c:active { transform: scale(.95); }
-.btn-c.ok { background: rgba(34,197,94,.2); color: #4ade80; }
-.btn-q { background: var(--orange); color: #fff; }
-.btn-q:active { transform: scale(.95); background: var(--orange-dark); }
-
-/* states */
-.loading-s, .error-s { padding: 48px 0; text-align: center; }
-.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 14px; }
-.loading-s p { color: var(--muted); font-size: 14px; }
-.error-s p { color: #f87171; font-size: 14px; font-weight: 600; }
-.error-s small { color: var(--muted); font-size: 12px; display: block; margin-top: 6px; line-height: 1.5; }
-
-/* modal */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; align-items: flex-end; justify-content: center; backdrop-filter: blur(6px); }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--surface); border-radius: 28px 28px 0 0; padding: 24px 28px 48px; width: 100%; max-width: 430px; text-align: center; animation: up .3s cubic-bezier(.34,1.56,.64,1); }
-@keyframes up { from { transform: translateY(100%); } }
-.handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 22px; }
-.modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.modal p  { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
-#qr-box { display: inline-block; background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 22px; }
-.modal-close { width: 100%; padding: 14px; background: var(--surface2); border: none; border-radius: 14px; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
-
-.footer { text-align: center; padding: 32px 24px 0; font-size: 12px; color: #9a8f84; }
-
-.coming-soon {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 40px 28px;
-  text-align: center;
-  border: 1.5px dashed var(--border);
-}
-.cs-icon { font-size: 36px; margin-bottom: 14px; }
-.coming-soon h3 {
-  font-family: 'Young Serif', serif;
-  font-size: 22px; font-weight: 400;
-  color: var(--off-white); margin-bottom: 10px;
-}
-.coming-soon p {
-  font-size: 14px; color: var(--muted);
-  line-height: 1.6; margin-bottom: 18px;
-  font-style: italic;
-}
-.coming-soon span {
-  display: inline-block;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--muted);
-  background: var(--surface2);
-  border-radius: 20px; padding: 5px 14px;
-  font-family: 'Instrument Serif', serif;
-  font-style: normal;
+.subtitle {
+  text-align: center; font-family: var(--serif); font-style: italic;
+  font-size: 18px; line-height: 1.35; color: #5c5854;
+  margin: 20px 0 20px;
 }
 
-/* ── Parallax scroll content ── */
-.scroll-content {
-  margin-top: 110px; /* offset for fixed header height */
-  will-change: transform;
+.dots { display: flex; justify-content: center; align-items: center; gap: 7px; margin-bottom: 22px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dot-off); transition: all .25s ease; }
+.dot.active { width: 26px; border-radius: 5px; background: var(--dot-on); }
+
+/* ── carousel ── */
+.carousel-viewport { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 0 20px 22px; }
+.carousel-track { display: flex; width: 400%; height: 100%; transition: transform .32s cubic-bezier(.22,.68,0,1); }
+.carousel-track.dragging { transition: none; }
+.tab-slide { flex: 0 0 25%; height: 100%; padding: 0 5px; }
+
+.panel-card {
+  background: var(--panel-tint);
+  border-radius: 28px;
+  padding: 20px 16px 16px 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.parallax-block {
-  transform: translateZ(0);
-  transition: transform 0.1s linear;
-  will-change: transform;
+.panel-head { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center; padding-right: 4px; margin-bottom: 16px; }
+.panel-head h2 { font-family: var(--serif); font-weight: 400; font-size: 34px; color: rgba(255,255,255,.92); }
+.copy-all-wrap { display: flex; align-items: center; gap: 10px; }
+.copy-all-label { font-family: var(--serif); font-style: italic; font-size: 14px; color: rgba(255,255,255,.5); }
+.icon-btn.small { width: 44px; height: 44px; border-radius: 13px; }
+.icon-btn.small svg { width: 17px; height: 17px; }
+
+.server-list {
+  flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column; gap: 10px; padding-right: 4px; padding-bottom: 4px;
+  scrollbar-width: none;
 }
+.server-list::-webkit-scrollbar { display: none; }
+
+.server-card { background: var(--card-bg); border-radius: 20px; padding: 15px 17px; flex: 0 0 auto; }
+.row-top { display: flex; justify-content: space-between; align-items: baseline; }
+.idx { font-family: var(--serif); font-size: 26px; color: #fff; }
+.ping { font-size: 13.5px; color: #eae8e4; font-weight: 500; }
+.row-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; gap: 10px; }
+.vname { font-family: var(--serif); font-size: 16px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.copy-btn {
+  background: var(--pill-bg); color: #fff; border: none; border-radius: 100px;
+  padding: 8px 19px; font-size: 12.5px; font-family: var(--sans); font-weight: 500;
+  cursor: pointer; flex-shrink: 0; transition: background .15s, transform .1s;
+}
+.copy-btn:active { transform: scale(.95); }
+.copy-btn.ok { background: var(--pill-ok); }
+
+.state-msg { padding: 40px 6px; text-align: center; }
+.state-msg .spinner { width: 26px; height: 26px; border: 3px solid rgba(255,255,255,.15); border-top-color: #fff; border-radius: 50%; margin: 0 auto 12px; animation: spin .8s linear infinite; }
+.state-msg p { color: rgba(255,255,255,.85); font-size: 14px; font-weight: 600; }
+.state-msg small { color: rgba(255,255,255,.5); font-size: 12px; display: block; margin-top: 6px; line-height: 1.5; }
+
+.foot-status { flex: 0 0 auto; text-align: center; font-size: 11px; color: rgba(0,0,0,.4); padding: 0 20px 14px; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div>
-    <h1>V2Ray</h1>
-    <p>Myanmar · Best servers</p>
+<div class="app">
+
+  <div class="header-section">
+    <div class="top-row">
+      <div class="logo">V2Dash</div>
+      <div class="top-actions">
+        <button class="icon-btn" id="copyAllBtn" onclick="copyAll40()" aria-label="Copy all 40">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="12" height="12" rx="2.5"/><path d="M9 16v2.5A2.5 2.5 0 0 0 11.5 21H18a2.5 2.5 0 0 0 2.5-2.5V12A2.5 2.5 0 0 0 18 9.5h-2"/></svg>
+        </button>
+        <button class="icon-btn" id="refreshBtn" onclick="loadAll()" aria-label="Refresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="subtitle">Top vless servers<br>from opensource providers.</p>
+    <div class="dots" id="dots">
+      <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
   </div>
-  <button class="refresh-btn" id="rbtn" onclick="loadAll()">↻</button>
-</div>
 
-<div class="scroll-content">
-<div class="status-row">
-  <div class="dot"></div>
-  <div class="status-text" id="stxt">Loading configs…</div>
-</div>
-
-<div class="stat-row">
-  <div class="stat-card orange">
-    <div class="num" id="stat-n">—</div>
-    <div class="lbl">Servers</div>
-    <div class="ico">⚡</div>
+  <div class="carousel-viewport" id="viewport">
+    <div class="carousel-track" id="track">
+      <div class="tab-slide" data-tab="epo">
+        <div class="panel-card">
+          <div class="panel-head">
+            <h2>Epo</h2>
+            <div class="copy-all-wrap">
+              <span class="copy-all-label">copy all</span>
+              <button class="icon-btn small" onclick="copyProvider('epo', this)" aria-label="Copy all Epo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="12" height="12" rx="2.5"/><path d="M9 16v2.5A2.5 2.5 0 0 0 11.5 21H18a2.5 2.5 0 0 0 2.5-2.5V12A2.5 2.5 0 0 0 18 9.5h-2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="server-list" id="list-epo"><div class="state-msg"><div class="spinner"></div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="tab-slide" data-tab="f0rc3run">
+        <div class="panel-card">
+          <div class="panel-head">
+            <h2>Force3</h2>
+            <div class="copy-all-wrap">
+              <span class="copy-all-label">copy all</span>
+              <button class="icon-btn small" onclick="copyProvider('f0rc3run', this)" aria-label="Copy all Force3">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="12" height="12" rx="2.5"/><path d="M9 16v2.5A2.5 2.5 0 0 0 11.5 21H18a2.5 2.5 0 0 0 2.5-2.5V12A2.5 2.5 0 0 0 18 9.5h-2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="server-list" id="list-f0rc3run"><div class="state-msg"><div class="spinner"></div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="tab-slide" data-tab="matin">
+        <div class="panel-card">
+          <div class="panel-head">
+            <h2>Martin</h2>
+            <div class="copy-all-wrap">
+              <span class="copy-all-label">copy all</span>
+              <button class="icon-btn small" onclick="copyProvider('matin', this)" aria-label="Copy all Martin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="12" height="12" rx="2.5"/><path d="M9 16v2.5A2.5 2.5 0 0 0 11.5 21H18a2.5 2.5 0 0 0 2.5-2.5V12A2.5 2.5 0 0 0 18 9.5h-2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="server-list" id="list-matin"><div class="state-msg"><div class="spinner"></div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="tab-slide" data-tab="rooster">
+        <div class="panel-card">
+          <div class="panel-head">
+            <h2>Rooster</h2>
+            <div class="copy-all-wrap">
+              <span class="copy-all-label">copy all</span>
+              <button class="icon-btn small" onclick="copyProvider('rooster', this)" aria-label="Copy all Rooster">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="12" height="12" rx="2.5"/><path d="M9 16v2.5A2.5 2.5 0 0 0 11.5 21H18a2.5 2.5 0 0 0 2.5-2.5V12A2.5 2.5 0 0 0 18 9.5h-2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="server-list" id="list-rooster"><div class="state-msg"><div class="spinner"></div><p>Loading…</p></div></div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="stat-card blue">
-    <div class="num">4</div>
-    <div class="lbl">Providers</div>
-    <div class="ico">🔗</div>
-  </div>
-</div>
 
-<div class="sub-card">
-  <div>
-    <h3>Subscription Link</h3>
-    <p>Import all at once into V2BOX</p>
-  </div>
-  <button class="sub-btn" id="subbtn" onclick="copySubLink()">Copy link</button>
-</div>
-
-<div class="section-header">
-  <h2>Servers</h2>
-  <span>Top 10 each</span>
-</div>
-
-<div class="pills">
-  <button class="pill on" data-p="epo"      onclick="switchTab('epo',this)">Epo</button>
-  <button class="pill off" data-p="matin"    onclick="switchTab('matin',this)">Matin</button>
-  <button class="pill off" data-p="f0rc3run" onclick="switchTab('f0rc3run',this)">F0rc3</button>
-  <button class="pill off" data-p="rooster"  onclick="switchTab('rooster',this)">Rooster</button>
-</div>
-
-<div class="panels">
-  <div class="panel active" id="panel-epo"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
-  <div class="panel"        id="panel-matin"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
-  <div class="panel"        id="panel-f0rc3run"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
-  <div class="panel"        id="panel-rooster"><div class="loading-s"><div class="spinner"></div><p>Loading…</p></div></div>
-</div>
-
-<div class="footer">Auto-fetched every 4h · Epodonios · MatinGhanbari · F0rc3Run · RoosterKid</div>
-</div><!-- end scroll-content -->
-
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <div class="handle"></div>
-    <h3>Scan with V2BOX</h3>
-    <p>Point your camera to import this server</p>
-    <div id="qr-box"></div>
-    <button class="modal-close" onclick="closeModal()">Done</button>
-  </div>
+  <div class="foot-status" id="stxt">Loading…</div>
 </div>
 
 <script>
+// Order matches the design: Epo, Force3, Martin, Rooster
+const TABS = ['epo', 'f0rc3run', 'matin', 'rooster'];
 const SRC = {
   epo:      './configs/epo.txt',
-  matin:    './configs/matin.txt',
   f0rc3run: './configs/f0rc3run.txt',
+  matin:    './configs/matin.txt',
   rooster:  './configs/rooster.txt'
 };
-const TABS = Object.keys(SRC);
-window._c = {};
+window._c = {}; // { tab: [{ms, uri}, ...] }
 
 function parse(raw) {
-  return raw.split('\n').map(l=>l.trim()).filter(l=>
-    l.startsWith('vless://') || l.startsWith('vmess://') ||
-    l.startsWith('ss://') || l.startsWith('trojan://')
-  );
+  // lines are "ms|uri"
+  return raw.split('\n').map(l=>l.trim()).filter(Boolean).map(line => {
+    const i = line.indexOf('|');
+    if (i === -1) return null;
+    const ms = parseInt(line.slice(0,i), 10);
+    const uri = line.slice(i+1);
+    if (!Number.isFinite(ms) || !/^(vless|vmess|ss|trojan):\/\//.test(uri)) return null;
+    return { ms, uri };
+  }).filter(Boolean);
 }
 
-function meta(uri) {
+function displayName(uri) {
   try {
     if (uri.startsWith('vmess://')) {
       const j = JSON.parse(atob(uri.slice(8).split('#')[0]));
-      return { name: j.ps||j.add||'VMess', port: j.port||'?', tls: j.tls==='tls', type: j.net||'tcp' };
+      return j.ps || j.add || 'vless name';
     }
     const ns = uri.replace(/^\w+:\/\//,'');
-    const parts = ns.split('@');
-    const hp = parts.length>1 ? parts[parts.length-1] : parts[0];
-    const ci = hp.lastIndexOf(':');
-    const host = hp.slice(0,ci)||hp;
-    const port = hp.slice(ci+1).split(/[/?#]/)[0]||'?';
-    const qi = hp.indexOf('?');
-    const p = new URLSearchParams(qi>=0 ? hp.slice(qi+1).split('#')[0] : '');
-    const tls = (p.get('security')||'').includes('tls');
-    const type = p.get('type')||p.get('net')||'tcp';
-    const rn = uri.split('#')[1]||'';
-    let name=''; try { name=decodeURIComponent(rn); } catch { name=rn; }
-    name = name.replace(/[^\x20-\x7E]/g,'').trim()||host;
-    return { name, port, tls, type };
-  } catch { return { name: uri.slice(0,28), port:'?', tls:false, type:'?' }; }
+    const hp = ns.includes('@') ? ns.split('@').pop() : ns;
+    const host = hp.split(/[/?#:]/)[0];
+    const rn = uri.split('#')[1] || '';
+    let name = ''; try { name = decodeURIComponent(rn); } catch { name = rn; }
+    name = name.replace(/[^\x20-\x7E]/g,'').trim();
+    return name || host || 'vless name';
+  } catch { return 'vless name'; }
 }
 
-function renderPanel(proto, configs) {
-  const el = document.getElementById('panel-'+proto);
-  if (!configs||!configs.length) {
-    el.innerHTML = `<div class="error-s"><p>No configs yet</p><small>Go to Actions → "Fetch V2Ray Configs" → Run workflow</small></div>`;
+function renderPanel(tab, entries) {
+  const el = document.getElementById('list-'+tab);
+  if (!entries || !entries.length) {
+    el.innerHTML = `<div class="state-msg"><p>No configs yet</p><small>Run the "Fetch V2Ray Configs" GitHub Action, or hit refresh once it has.</small></div>`;
     return;
   }
-  window._c[proto] = configs;
-  el.innerHTML = configs.map((uri,i) => {
-    const m = meta(uri);
-    const s = t=>(t||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    return `<div class="config-card">
-      <div class="rank">${String(i+1).padStart(2,'0')}</div>
-      <div class="info">
-        <div class="cname" title="${s(m.name)}">${s(m.name)}</div>
-        <div class="tags">
-          <span class="tag t-port">:${m.port}</span>
-          <span class="tag ${m.tls?'t-tls':'t-notls'}">${m.tls?'TLS':'NO TLS'}</span>
-          <span class="tag t-type">${(m.type||'tcp').toUpperCase()}</span>
-        </div>
+  window._c[tab] = entries;
+  el.innerHTML = entries.map((e,i) => {
+    const s = t => (t||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `<div class="server-card">
+      <div class="row-top">
+        <span class="idx">${String(i+1).padStart(2,'0')}</span>
+        <span class="ping">ping ${e.ms}</span>
       </div>
-      <div class="btns">
-        <button class="btn-c" onclick="cp(this,'${proto}',${i})">Copy</button>
-        <button class="btn-q" onclick="qr('${proto}',${i})">QR</button>
+      <div class="row-bottom">
+        <span class="vname" title="${s(displayName(e.uri))}">${s(displayName(e.uri))}</span>
+        <button class="copy-btn" onclick="cp(this,'${tab}',${i})">copy</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function cp(btn, proto, idx) {
-  const uri = window._c[proto][idx];
-  const done = () => { btn.textContent='✓'; btn.classList.add('ok'); setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('ok'); },2000); };
-  if (navigator.clipboard) navigator.clipboard.writeText(uri).then(done).catch(()=>fb(uri,done));
-  else fb(uri,done);
+function copyText(text, onDone) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(onDone).catch(()=>fallbackCopy(text,onDone));
+  } else fallbackCopy(text,onDone);
 }
-
-function fb(t, cb) {
+function fallbackCopy(t, cb) {
   const ta = document.createElement('textarea');
-  ta.value=t; ta.style.cssText='position:fixed;opacity:0';
+  ta.value = t; ta.style.cssText = 'position:fixed;opacity:0';
   document.body.appendChild(ta); ta.focus(); ta.select();
   try { document.execCommand('copy'); cb(); } catch(_){}
   document.body.removeChild(ta);
 }
 
-function copySubLink() {
-  const all = [...new Set(TABS.flatMap(t => window._c[t]||[]))];
-  if (!all.length) { alert('Wait for configs to finish loading.'); return; }
-  const url = 'data:text/plain;base64,' + btoa(unescape(encodeURIComponent(all.join('\n'))));
-  const btn = document.getElementById('subbtn');
-  const done = () => { btn.textContent='✓ Copied!'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='Copy link'; btn.classList.remove('copied'); },2500); };
-  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(()=>fb(url,done));
-  else fb(url,done);
+function cp(btn, tab, idx) {
+  const uri = window._c[tab][idx].uri;
+  copyText(uri, () => {
+    btn.textContent = '✓'; btn.classList.add('ok');
+    setTimeout(()=>{ btn.textContent='copy'; btn.classList.remove('ok'); }, 1800);
+  });
 }
 
-function qr(proto, idx) {
-  const uri = window._c[proto][idx];
-  const box = document.getElementById('qr-box');
-  box.innerHTML = '';
-  new QRCode(box, { text:uri, width:220, height:220, colorDark:'#000', colorLight:'#fff', correctLevel:QRCode.CorrectLevel.M });
-  document.getElementById('modal').classList.add('open');
+function copyProvider(tab, btn) {
+  const entries = window._c[tab];
+  if (!entries || !entries.length) return;
+  copyText(entries.map(e=>e.uri).join('\n'), () => flashIcon(btn));
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-function switchTab(proto, el) {
-  document.querySelectorAll('.pill').forEach(p => { p.className='pill off'; });
-  el.className = 'pill on';
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+proto).classList.add('active');
+function copyAll40() {
+  const all = TABS.flatMap(t => (window._c[t]||[]).map(e=>e.uri));
+  if (!all.length) return;
+  copyText(all.join('\n'), () => flashIcon(document.getElementById('copyAllBtn')));
+}
+
+function flashIcon(btn) {
+  btn.classList.add('ok');
+  setTimeout(()=>btn.classList.remove('ok'), 1500);
 }
 
 async function loadAll() {
-  const btn = document.getElementById('rbtn');
-  btn.classList.add('spinning');
-  document.getElementById('stxt').innerHTML = 'Refreshing…';
-  window._c = {};
-  TABS.forEach(p => {
-    document.getElementById('panel-'+p).innerHTML = `<div class="loading-s"><div class="spinner"></div><p>Loading…</p></div>`;
-  });
+  const rbtn = document.getElementById('refreshBtn');
+  rbtn.classList.add('spinning');
+  document.getElementById('stxt').textContent = 'Refreshing…';
 
   let total = 0;
   await Promise.all(TABS.map(async tab => {
     try {
-      const res = await fetch(`${SRC[tab]}?t=${Date.now()}`, { cache:'no-store' });
+      const res = await fetch(`${SRC[tab]}?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const raw = await res.text();
-      if (!raw.trim() || raw.trim()==='fetch failed') throw new Error('Run the GitHub Action first');
-      const configs = parse(raw);
-      renderPanel(tab, configs);
-      total += configs.length;
-    } catch(e) {
-      document.getElementById('panel-'+tab).innerHTML = `<div class="error-s"><p>Could not load</p><small>${e.message}</small></div>`;
+      if (!raw.trim() || raw.trim() === 'fetch failed') throw new Error('No data yet — run the GitHub Action');
+      const entries = parse(raw);
+      renderPanel(tab, entries);
+      total += entries.length;
+    } catch (e) {
+      document.getElementById('list-'+tab).innerHTML = `<div class="state-msg"><p>Could not load</p><small>${e.message}</small></div>`;
     }
   }));
 
-  document.getElementById('stat-n').textContent = total||'—';
-  const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('stxt').innerHTML = `Updated <b>${t}</b> · 4h auto-refresh`;
-  btn.classList.remove('spinning');
+  rbtn.classList.remove('spinning');
+  const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('stxt').textContent = total ? `${total} servers · updated ${t}` : `Updated ${t}`;
 }
 
 loadAll();
 
-// ── Parallax ──
-const statRow   = document.querySelector('.stat-row');
-const subCard   = document.querySelector('.sub-card');
-const statusRow = document.querySelector('.status-row');
+// ── swipe carousel (pointer events cover touch + mouse) ──
+const track = document.getElementById('track');
+const viewport = document.getElementById('viewport');
+const dots = [...document.querySelectorAll('.dot')];
+let activeIndex = 0;
+let startX = 0, startY = 0, dragX = 0, lockedAxis = null, dragging = false;
 
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  // Each block moves at a slightly different speed — classic parallax
-  if (statusRow) statusRow.style.transform = `translateY(${y * 0.08}px)`;
-  if (statRow)   statRow.style.transform   = `translateY(${y * 0.05}px)`;
-  if (subCard)   subCard.style.transform   = `translateY(${y * 0.03}px)`;
-}, { passive: true });
+function setActive(i, animate = true) {
+  activeIndex = Math.max(0, Math.min(TABS.length - 1, i));
+  track.classList.toggle('dragging', !animate);
+  track.style.transform = `translateX(-${activeIndex * 25}%)`;
+  dots.forEach((d, idx) => d.classList.toggle('active', idx === activeIndex));
+}
+
+function onDown(e) {
+  const p = e.touches ? e.touches[0] : e;
+  startX = p.clientX; startY = p.clientY; dragX = 0; lockedAxis = null; dragging = false;
+}
+function onMove(e) {
+  const p = e.touches ? e.touches[0] : e;
+  const dx = p.clientX - startX, dy = p.clientY - startY;
+  if (lockedAxis === null) {
+    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+  }
+  if (lockedAxis === 'x') {
+    if (e.cancelable) e.preventDefault();
+    dragging = true;
+    dragX = dx;
+    const viewW = viewport.clientWidth || 1;
+    const pct = (dragX / viewW) * 25;
+    track.classList.add('dragging');
+    track.style.transform = `translateX(calc(-${activeIndex * 25}% + ${pct}%))`;
+  }
+}
+function onUp() {
+  if (dragging) {
+    const viewW = viewport.clientWidth || 1;
+    const threshold = viewW * 0.16;
+    if (dragX <= -threshold) setActive(activeIndex + 1);
+    else if (dragX >= threshold) setActive(activeIndex - 1);
+    else setActive(activeIndex);
+  }
+  lockedAxis = null; dragging = false; dragX = 0;
+}
+
+viewport.addEventListener('touchstart', onDown, { passive: true });
+viewport.addEventListener('touchmove', onMove, { passive: false });
+viewport.addEventListener('touchend', onUp);
+viewport.addEventListener('touchcancel', onUp);
+viewport.addEventListener('mousedown', onDown);
+window.addEventListener('mousemove', (e) => { if (lockedAxis !== null || e.buttons === 1) onMove(e); });
+window.addEventListener('mouseup', onUp);
+
+setActive(0, false);
 </script>
 </body>
 </html>
