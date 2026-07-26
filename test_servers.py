@@ -1,5 +1,6 @@
 import re
 import socket
+import time
 import concurrent.futures
 import threading
 
@@ -46,15 +47,18 @@ def extract_host_port(uri):
         return '', 0
 
 
-def tcp_ok(uri):
+def tcp_ping(uri):
+    """Return round-trip TCP connect time in ms, or None if unreachable."""
     host, port = extract_host_port(uri)
     if not host or not port:
-        return False
+        return None
     try:
+        start = time.perf_counter()
         with socket.create_connection((host, port), timeout=TIMEOUT):
-            return True
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            return round(elapsed_ms)
     except Exception:
-        return False
+        return None
 
 
 def load_raw(path):
@@ -89,22 +93,23 @@ def score(u):
 
 
 def filter_live(uris, max_results, test_limit=TEST_LIMIT):
-    live = []
+    """Test candidates concurrently, keep testing until we have enough live
+    ones, then return the fastest `max_results` sorted by measured ping."""
+    found = []
     lock = threading.Lock()
 
     def test(u):
-        if len(live) >= max_results:
-            return
-        if tcp_ok(u):
+        ms = tcp_ping(u)
+        if ms is not None:
             with lock:
-                if len(live) < max_results:
-                    live.append(u)
+                found.append((ms, u))
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=WORKERS) as ex:
         futures = [ex.submit(test, u) for u in uris[:test_limit]]
         concurrent.futures.wait(futures, timeout=60)
 
-    return live[:max_results]
+    found.sort(key=lambda pair: pair[0])
+    return found[:max_results]
 
 
 # ── Per-provider: fetch, dedupe, score, test, save top 10 each ──
@@ -117,6 +122,8 @@ for p in PROVIDERS:
 
     live = filter_live(configs, TOP_N, test_limit=TEST_LIMIT)
     out_path = f"configs/{p['slug']}.txt"
+    lines = [f"{ms}|{uri}" for ms, uri in live]
     with open(out_path, "w") as f:
-        f.write('\n'.join(live) if live else 'fetch failed')
-    print(f"{p['name']}: {len(live)} live servers saved -> {out_path}")
+        f.write('\n'.join(lines) if lines else 'fetch failed')
+    print(f"{p['name']}: {len(live)} live servers saved (fastest {live[0][0]}ms)" if live
+          else f"{p['name']}: 0 live servers")
