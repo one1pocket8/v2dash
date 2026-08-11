@@ -1,10 +1,10 @@
+2|trojan://20ba0c60-0133-11f1-95ef-1239d0255272@172.64.152.23:443?path=/howdy&security=tls&insecure=1&host=uk1.test3.net&type=ws&allowInsecure=1&sni=uk1.test3.net#EPODONIOS
 2|trojan://669d0ac7b5b64ebbb1abb75d5d540a5c@104.16.159.6:443?path=/6b777a91&security=tls&host=bangladeshipatri.com&type=ws&sni=bangladeshipatri.com#EPODONIOS
 2|trojan://87961f9d-bee1-4377-826b-e169e7891c4f@173.245.49.13:443?type=ws&security=tls&host=yks-dd9.pages.dev&sni=yks-dd9.pages.dev&insecure=0&allowInsecure=0#EPODONIOS
-2|trojan://8r<[9'l6hAO#8ZQi@104.18.109.147:443?path=/tr&security=tls&insecure=1&host=Koma-YT.PAGeS.Dev&type=ws&allowInsecure=1&sni=Koma-YT.PAGeS.Dev#EPODONIOS
 2|trojan://MiTiVPN@104.16.71.213:443?path=/ed=mitivpn&security=tls&alpn=http/1.1&insecure=0&host=wwww.95r.ir&fp=chrome&type=ws&allowInsecure=0&sni=wwww.95r.ir#EPODONIOS
-2|trojan://MiTiVPN@188.114.96.3:443?path=&security=tls&alpn=http/1.1&insecure=0&host=nlls.mitiVpN.lIfeStyLe&fp=chrome&type=ws&allowInsecure=0&sni=.mitiVpN.lIfeStyLe#EPODONIOS
-2|trojan://Mitivpn@151.101.110.219:443?path=/de&security=tls&alpn=http/1.1&insecure=0&host=3-mitivpn.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=global.fastly.com#EPODONIOS
-2|trojan://MiTiVPN@188.114.97.6:443?path=&security=tls&alpn=http/1.1&insecure=0&host=nlls-&fp=chrome&type=ws&allowInsecure=0&sni=Nl1.mitiVpN.lIfeStyLe#EPODONIOS
+2|trojan://MiTiVPN@45.130.125.207:443?path=&security=tls&alpn=http/1.1&host=nll-s-mitiVpN.lIfeStyLe&fp=chrome&type=ws&sni=N--l1-.mitiVpN.lIfeStyLe#EPODONIOS
 2|trojan://Telegram-Config0plus@104.17.108.189:443?path=/ca-cl&security=tls&insecure=0&host=go.appsflyer.com.r3xxe.eu.cc&type=ws&allowInsecure=0&sni=go.appsflyer.com.r3xxe.eu.cc#EPODONIOS
+2|trojan://bpb-trojan@190.93.244.202:443?path=/tr?ed&security=tls&host=fcspring.ggff.net&type=ws&sni=fcspring.ggff.net#EPODONIOS
 2|trojan://c206d543-023d-46cc-9d5a-1f0f2fc16323@172.67.149.60:443?path=/in-pdr&security=tls&insecure=0&host=space.byu.id.yxls.eu.cc&ech=encryptedsni.com+udp://8.8.8.8&type=ws&allowInsecure=0&sni=space.byu.id.yxls.eu.cc#EPODONIOS
 2|trojan://e6975922-245b-4507-8d12-61b3a5434bc4@69.46.46.208:443?path=/ws/trojan/e6975922-245b-4507-8d12-61b3a5434bc4?ed=2048&security=tls&alpn=h3,h2,http/1.1&insecure=0&host=ezaccess1-luffy-ezaccess1-ab56.up.railway.app&fp=chrome&type=ws&allowInsecure=0&sni=ezaccess1-luffy-ezaccess1-ab56.up.railway.app#EPODONIOS
+2|trojan://humanity@104.16.174.44:443?path=/assignment&security=tls&insecure=0&host=www.ignitelimit.com&type=ws&allowInsecure=0&sni=www.ignitelimit.com#EPODONIOS
