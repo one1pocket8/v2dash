@@ -1,1 +1,10 @@
-fetch failed
+1|vless://e0454af2-6fe9-4983-a55d-05e1da202602@199.232.78.159:443?path=%2F&security=tls&encryption=none&insecure=0&host=lsjaoijji.global.ssl.fastly.neT&type=ws&allowInsecure=0&sni=ssl.fastly.com#⚡
+8|vless://e841c0a7-03bb-4058-95e2-0e811100d02a@69.46.46.123:443?path=%2Fws%2Fe841c0a7-03bb-4058-95e2-0e811100d02a&security=tls&alpn=http%2F1.1&encryption=none&insecure=0&host=x4g-production-d65b.up.railway.app&fp=chrome&type=ws&allowInsecure=0&sni=x4g-production-d65b.up.railway.app#⚡
+8|trojan://humanity@104.16.174.117:443?security=tls&sni=www.ignitelimit.com#⚡
+8|trojan://humanity@216.24.57.1:443?security=tls&sni=www.ignitelimit.com#⚡
+8|trojan://humanity@104.18.152.143:443?security=tls&sni=www.ignitelimit.com#⚡
+8|vless://926bc4cd-709e-4e90-8aa7-78db75fbe86b@104.18.152.229:443?encryption=none&type=ws&security=tls&path=%2F---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN%2FHK---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN&host=Hk-MiTiVPN--MiTiVPN--MiTiVPN---MiTiVPN--MiTiVPN--MiTiVPN.s88r.iR&sni=H-k-MiTiVPN--MiTiVPN--MiTiVPN---MiTiVPN--MiTiVPN--MiTiVPN.s88r.iR&alpn=h2%2Chttp%2F1.1&fp=chrome#⚡
+8|trojan://c024672d-0509-322e-8792-1b54cb82e1ac@162.159.194.69:443?security=tls&sni=blog4.2220aa.xyz#⚡
+8|trojan://humanity@104.16.174.6:443?security=tls&sni=www.ignitelimit.com#⚡
+9|vless://926bc4cd-709e-4e90-8aa7-78db75fbe86b@162.159.0.8:443?encryption=none&type=ws&security=tls&path=%2F---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN%2Fde---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN%2F---%40MiTiVPN---%40MiTiVPN&host=De1-MiTiVPN--MiTiVPN--MiTiVPN---MiTiVPN--MiTiVPN--MiTiVPN.KinGNetWork.iR&sni=1111--MiTiVPN---MiTiVPN-o.KinGNetWork.iR&alpn=h2%2Chttp%2F1.1&fp=chrome#⚡
+9|trojan://humanity@104.18.152.187:443?security=tls&sni=www.ignitelimit.com#⚡
