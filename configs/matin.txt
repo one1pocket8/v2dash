@@ -1,10 +1,10 @@
-1|trojan://humanity@104.18.152.113:443?security=tls&sni=www.ignitelimit.com#⚡
-2|vless://e5c5c006-facc-45be-99bc-20d772372d5c@199.232.78.159:443?path=%2FTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%3Fed&security=tls&encryption=none&host=pane3.global.ssl.fastly.net&type=ws&sni=ssl.fastly.com#⚡
+1|vless://e5c5c006-facc-45be-99bc-20d772372d5c@199.232.78.159:443?path=%2FTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%2CTELEGRAM_NUFiLTER%3Fed&security=tls&encryption=none&host=pane3.global.ssl.fastly.net&type=ws&sni=ssl.fastly.com#⚡
+1|trojan://humanity@104.19.229.21:443?security=tls&sni=www.ignitelimit.com#⚡
 2|vless://0261c8f9-413a-455b-942b-3713c6b0084a@172.66.40.99:443?path=%2F%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%40V2RAYFAST_7%3Fed%3D2048&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&host=www.dollardoon.com&fp=chrome&type=ws&sni=www.dollardoon.com#⚡
+2|trojan://humanity@104.18.152.159:443?security=tls&sni=www.ignitelimit.com&type=ws&path=/assignment&Host=www.ignitelimit.com#⚡
 2|trojan://humanity@8.6.112.0:443?security=tls&sni=www.ignitelimit.com&type=ws&path=/assignment&Host=www.ignitelimit.com#⚡
-2|vless://2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5@108.165.216.243:443?security=tls&encryption=none&path=%2F%3FTELEGRAM--madshopx%3Fed%3D512&insecure=0&allowInsecure=0&type=ws&sni=cfed.tgzdyz2.top#⚡
+2|vless://9b18ccef-b9e0-41d1-8990-9d970569e142@172.67.217.240:443?path=%2Fproxyip%3Dbpb.yousef.isegaro.com&security=tls&encryption=none&fm=%7B%22tcp%22%3A%5B%7B%22type%22%3A%22fragment%22%2C%22settings%22%3A%7B%22packets%22%3A%22tlshello%22%2C%22lengths%22%3A%5B%225%22%2C%2294%22%2C%221%22%5D%2C%22delays%22%3A%5B%220%22%5D%2C%22maxSplit%22%3A%220%22%7D%7D%2C%7B%22type%22%3A%22fragment%22%2C%22settings%22%3A%7B%22packets%22%3A%221-1%22%2C%22lengths%22%3A%5B%22109%22%2C%221%22%5D%2C%22delays%22%3A%5B%221%22%5D%2C%22maxSplit%22%3A%22355%22%7D%7D%5D%7D&insecure=0&host=web-socket.tgdaosheng.ggff.net&fp=unsafe&type=ws&allowInsecure=0&sni=web-socket.tgdaosheng.ggff.net#⚡
 2|vless://77777777-8a3e-6666-b6d1-a9c5f0e8b3a2@104.16.150.246:443?type=ws&security=tls&fp=chrome&sni=faxf32gkfzoxqv.fx6hsv0.ccwu.cc#⚡
-2|trojan://humanity@172.64.152.23:443?security=tls&sni=www.calmlunch.com&type=ws&path=/assignment&Host=www.calmlunch.com#⚡
-2|trojan://humanity@216.24.57.1:443?security=tls&sni=www.ignitelimit.com&type=ws&path=/assignment&Host=www.ignitelimit.com#⚡
-2|trojan://humanity@104.18.152.230:443?security=tls&sni=www.ignitelimit.com&type=ws&path=/assignment&Host=www.ignitelimit.com#⚡
-2|vless://36b99665-b78e-412c-8a0b-b78a62666799@172.64.233.22:443?security=tls&sni=grpc2.sharesite.ir&type=grpc#⚡
+2|trojan://MiTiVPN@188.114.97.6:443?security=tls#⚡
+2|vless://dac5b2de-7df9-4d38-ba41-f98ceb19bd75@172.64.83.208:443?security=tls&sni=sandWorm.PaGES.DEv&type=ws&host=sANDWOrm.pAGEs.DeV&path=%2F07n1q4ys4Pwba7qM&fp=chrome&alpn=h2%2Chttp%2F1.1#⚡
+2|trojan://humanity@104.16.174.124:443?security=tls&sni=www.ignitelimit.com&type=ws&path=/assignment&Host=www.ignitelimit.com#⚡
