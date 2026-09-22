@@ -1,10 +1,10 @@
-1|trojan://humanity@45.80.111.7:443?path=/assignment&security=tls&insecure=0&type=ws&allowInsecure=0&sni=www.calmlunch.com#EPODONIOS
-2|trojan://20ba0c60-0133-11f1-95ef-1239d0255272@172.64.152.23:443?path=/howdy&security=tls&insecure=1&host=uk1.test3.net&type=ws&allowInsecure=1&sni=uk1.test3.net#EPODONIOS
+1|trojan://MiTIVPN@167.82.76.7:443?path=%&security=tls&alpn=http/1.1&insecure=0&host=-33e.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=ssl.fastly.com#EPODONIOS
+1|trojan://humanity@172.67.149.60:443?path=/assignment&security=tls&insecure=0&ech=ip.gs+udp://8.8.8.8&type=ws&allowInsecure=0&sni=www.ignitelimit.com#EPODONIOS
+1|vless://0a653b7f-6076-f0f9-42cb-eb7b62e0a616@69.46.46.99:443?mode=stream-up&path=/xhttp-siz10/stream-up/0a653b7f-6076-f0f9-42cb-eb7b62e0a616&security=tls&alpn=h2&encryption=none&host=cedar-canyon-dbe7-production.up.railway.app&fp=chrome&type=xhttp&sni=cedar-canyon-dbe7-production.up.railway.app#EPODONIOS
+1|vless://103744ce-0153-49b1-2eac-d293a6ddd7e2@104.16.136.246:443?encryption=none&fp=chrome&host=nahan-mouse-7749.amirsina2026.workers.dev&path=/sync&security=tls&sni=nahan-mouse-7749.amirsina2026.workers.dev&type=ws#EPODONIOS
+2|trojan://018b8e7b-7813-4dcb-84a5-3c98f1521e00@104.21.83.135:443?path=/trojan&security=tls&insecure=0&fp=chrome&type=ws&allowInsecure=0&sni=id1.nathaya.web.id#EPODONIOS
 2|trojan://669d0ac7b5b64ebbb1abb75d5d540a5c@104.16.159.6:443?path=/6b777a91&security=tls&host=bangladeshipatri.com&type=ws&sni=bangladeshipatri.com#EPODONIOS
+2|trojan://752c96dd-a7e7-2946-ac61-b9f9a8924610@69.46.46.148:443?path=/i/l1PtfZZN37C_k8fYCJpT5n7NXpHPiR-oxfmQ1HyaVtd97PWBuD_4o4C8IJm6EmObrBtt8aQets34_jRNhzjxD3jKfGYLrKMQKbnk_37IxQnGhSFSFotPUYVmEPuc5gNkccLWpwKoKwCZi83hbWs/trojan-ws&security=tls&alpn=http/1.1&insecure=0&host=solipanel-production-94d4.up.railway.app&fp=chrome&type=ws&allowInsecure=0&sni=solipanel-production-94d4.up.railway.app#EPODONIOS
+2|trojan://8r<[9'l6hAO#8ZQi@104.16.7.70:443?path=/tr&security=tls&insecure=1&host=Koma-YT.PAGeS.Dev&type=ws&allowInsecure=1&sni=Koma-YT.PAGeS.Dev#EPODONIOS
 2|trojan://8r<[9'l6hAO#8ZQi@104.18.109.147:443?path=/tr&security=tls&insecure=1&host=Koma-YT.PAGeS.Dev&type=ws&allowInsecure=1&sni=Koma-YT.PAGeS.Dev#EPODONIOS
-2|trojan://MITIVPN@199.232.78.101:443?security=tls&alpn=http/1.1&insecure=0&host=mitivpn---ss--s---mitivpn-11s.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=ssl.fastly.com#EPODONIOS
 2|trojan://MITIVPN@199.232.78.160:443?path=mehrosaboram&security=tls&alpn=http/1.1&host=mitivpn---ss--s---mitivpn-44s.global.ssl.fastly.net&fp=chrome&type=ws&sni=ssl.fastly.com#EPODONIOS
-2|trojan://MiTIVPN@167.82.76.7:443?path=%&security=tls&alpn=http/1.1&insecure=0&host=-33e.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=ssl.fastly.com#EPODONIOS
-2|trojan://MiTIVPN@151.101.56.7:443?path=%&security=tls&alpn=http/1.1&insecure=0&host=e.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=ssl.fastly.com#EPODONIOS
-2|trojan://MiTIVPN@151.101.56.56:443?path=&security=tls&alpn=http/1.1&insecure=0&host=mitivpn---ss--s---mitivpn-66e.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=ssl.fastly.com#EPODONIOS
-2|trojan://MiTiVPN@151.101.56.101:443?path=/Configvibes------Configvibes------Configvibes------Configvibes------Configvibes------Configvibes------Configvibes------Configvibes------Configvibes------&&security=tls&alpn=http/1.1&insecure=0&host=mitivpn---ss--s---mitivpn-5.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=ssl.fastly.com#EPODONIOS
